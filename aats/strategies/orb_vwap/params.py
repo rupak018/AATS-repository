@@ -16,7 +16,7 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from aats.domain.base import canonical_dumps, sha256_hex
-from aats.domain.enums import StrategyVariant
+from aats.domain.enums import RegimeLabel, StrategyVariant
 
 
 class OrbVwapParams(BaseModel):
@@ -41,11 +41,14 @@ class OrbVwapParams(BaseModel):
     proposal_expiry_minutes: int = Field(gt=0)
     last_entry_time_et: time
     regime_rule_version: str
+    enabled_regimes: tuple[RegimeLabel, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def _check(self) -> Self:
         if self.orb_width_atr_min >= self.orb_width_atr_max:
             raise ValueError("orb_width_atr_min must be < orb_width_atr_max")
+        if len(set(self.enabled_regimes)) != len(self.enabled_regimes):
+            raise ValueError("enabled_regimes contains duplicates")
         if self.variant is not StrategyVariant.A_CLOSE_CONFIRM:
             raise ValueError("only variant A is implemented in this milestone")
         return self

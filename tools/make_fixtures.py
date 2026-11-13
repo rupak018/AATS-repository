@@ -46,6 +46,9 @@ class Spec:
     drop_minutes: tuple[int, ...] = ()
     duplicate_minutes: tuple[int, ...] = ()
     swap_minutes: tuple[int, ...] = ()  # deliver minute m+1 before minute m
+    regime: str | None = "bull"  # benchmark shape: bull | chop | bear | highvol | None (no benchmark file)
+    benchmark_until: int | None = None  # benchmark feed stops after this minute (stale inputs)
+    macro_events: tuple[tuple[str, int, int], ...] = ()  # (name, tier, minute after open)
 
 
 ORB = [(0, 100.50), (4, 101.05), (9, 100.30), (14, 100.80)]
@@ -57,7 +60,7 @@ SPECS = [
         "Valid range, high RVOL, steady breakout above ORB high and VWAP -> one CANDIDATE, then no re-entry.",
         [*ORB, (25, 100.90), (40, 101.50), (90, 102.60), (220, 101.90), (389, 101.60)],
         seed=11,
-        expect={"candidates": 1},
+        expect={"candidates": 1, "regime": "BULL_TREND"},
     ),
     Spec(
         "2026-10-15_range_bound",
@@ -65,7 +68,8 @@ SPECS = [
         "Price stays inside the opening range -> WAIT (NO_BREAKOUT) until the last-entry time, then NO_TRADE.",
         [*ORB, (60, 100.60), (150, 100.90), (300, 100.40), (389, 100.70)],
         seed=12,
-        expect={"candidates": 0},
+        regime="chop",
+        expect={"candidates": 0, "regime": "RANGE_CHOP"},
     ),
     Spec(
         "2026-10-16_missing_orb_bar",
@@ -91,6 +95,7 @@ SPECS = [
         [*ORB, (40, 101.60), (120, 102.50), (389, 101.80)],
         seed=15,
         rvol_target=0.5,
+        regime="chop",
         expect={"candidates": 0, "has_reason": "RVOL_BELOW_MIN"},
     ),
     Spec(
@@ -100,6 +105,7 @@ SPECS = [
         [*ORB, (60, 100.95), (90, 101.80), (200, 102.40), (389, 101.90)],
         seed=16,
         duplicate_minutes=(35,),
+        regime="bear",
         expect={"candidates": 0, "quality_issue": "DUPLICATE_BAR"},
     ),
     Spec(
@@ -109,6 +115,7 @@ SPECS = [
         [*ORB, (60, 100.95), (90, 101.80), (389, 101.90)],
         seed=17,
         swap_minutes=(50,),
+        regime="chop",
         expect={"quality_issue": "OUT_OF_ORDER"},
     ),
     Spec(
@@ -117,7 +124,8 @@ SPECS = [
         "First session after US daylight saving ends: open is 14:30 UTC, not 13:30 -> breakout CANDIDATE.",
         [*ORB, (25, 100.90), (40, 101.50), (90, 102.60), (389, 101.60)],
         seed=18,
-        expect={"candidates": 1, "open_utc": "2026-11-02T14:30:00+00:00"},
+        macro_events=(("SYNTHETIC_TIER1_RELEASE", 1, 30),),
+        expect={"candidates": 1, "open_utc": "2026-11-02T14:30:00+00:00", "regime": "NEWS_SHOCK"},
     ),
     Spec(
         "2026-11-27_early_close",
@@ -125,9 +133,86 @@ SPECS = [
         "Early close (13:00 ET = 18:00 UTC). Breakout only after 11:30 ET -> NO_TRADE outside entry window.",
         [*ORB, (100, 100.70), (130, 100.85), (150, 101.80), (209, 102.20)],
         seed=19,
-        expect={"candidates": 0, "early_close": True},
+        regime="highvol",
+        expect={"candidates": 0, "early_close": True, "regime": "HIGH_VOLATILITY"},
+    ),
+    Spec(
+        "2026-10-26_benchmark_missing",
+        date(2026, 10, 26),
+        "Same breakout shape as the clean case but no benchmark feed -> regime UNKNOWN -> REJECT, no trade.",
+        [*ORB, (25, 100.90), (40, 101.50), (90, 102.60), (220, 101.90), (389, 101.60)],
+        seed=20,
+        regime=None,
+        expect={"candidates": 0, "has_reason": "REGIME_NOT_ELIGIBLE", "regime": "UNKNOWN"},
+    ),
+    Spec(
+        "2026-10-27_benchmark_stale",
+        date(2026, 10, 27),
+        "Benchmark feed stops at 09:50 before the breakout -> inputs stale -> UNKNOWN -> REJECT, no trade.",
+        [*ORB, (25, 100.90), (40, 101.50), (90, 102.60), (220, 101.90), (389, 101.60)],
+        seed=21,
+        benchmark_until=20,
+        expect={"candidates": 0, "has_reason": "REGIME_NOT_ELIGIBLE"},
     ),
 ]
+
+SPY_SHAPES = {
+    "bull": ([(0, 580.0), (389, 584.0)], 0.70),
+    "highvol": ([(0, 580.0), (389, 584.0)], 0.70),
+    "chop": ([(0, 580.0), (60, 580.6), (120, 579.6), (200, 580.5), (280, 579.5), (389, 580.0)], 0.50),
+    "bear": ([(0, 580.0), (389, 576.0)], 0.30),
+}
+
+
+def interp(kp: list[tuple[int, float]], m: int) -> float:
+    for (m0, p0), (m1, p1) in pairwise(kp):
+        if m0 <= m <= m1:
+            return p0 + (p1 - p0) * (m - m0) / max(1, m1 - m0)
+    return kp[-1][1]
+
+
+def build_benchmark(spec: Spec, sess_open: object, minutes: int) -> dict[str, object] | None:
+    """SPY bars + breadth column, from a separate RNG so the symbol's own bars never change."""
+    if spec.regime is None:
+        return None
+    rng = random.Random(spec.seed + 1000)
+    kp, breadth = SPY_SHAPES[spec.regime]
+    scale = 0.2 if spec.regime in ("chop",) else 1.0
+    rows, prev = [], d2(kp[0][1])
+    last_minute = minutes if spec.benchmark_until is None else spec.benchmark_until + 1
+    for m in range(last_minute):
+        close = d2(interp(kp, m) + rng.gauss(0, 0.05 * scale))
+        o = prev
+        rows.append(
+            {
+                "start_utc": (sess_open + timedelta(minutes=m)).isoformat(),  # type: ignore[operator]
+                "open": str(o),
+                "high": str(max(o, close) + d2(abs(rng.gauss(0, 0.04)))),
+                "low": str(min(o, close) - d2(abs(rng.gauss(0, 0.04)))),
+                "close": str(close),
+                "volume": int(400_000 * (0.8 + 0.4 * rng.random())),
+                "is_final": "true",
+                "breadth_above_vwap": str(
+                    Decimal(repr(min(1.0, max(0.0, breadth + rng.gauss(0, 0.02))))).quantize(
+                        Decimal("0.0001")
+                    )
+                ),
+            }
+        )
+        prev = close
+    daily_sd = 0.025 if spec.regime == "highvol" else 0.006
+    closes, c = [], 575.0
+    for _ in range(21):
+        c *= 1 + rng.gauss(0, daily_sd)
+        closes.append(str(d2(c)))
+    events = [
+        {"name": n, "tier": t, "scheduled_utc": (sess_open + timedelta(minutes=om)).isoformat()}  # type: ignore[operator]
+        for n, t, om in spec.macro_events
+    ]
+    return {
+        "rows": rows,
+        "regime": {"spy_daily_closes": closes, "spy_5m_abs_return_norm": "0.0012", "macro_events": events},
+    }
 
 
 def build(spec: Spec) -> None:
@@ -201,6 +286,16 @@ def build(spec: Spec) -> None:
         w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()), lineterminator="\n")
         w.writeheader()
         w.writerows(arrival)
+    bench = build_benchmark(spec, sess.open_utc, minutes)
+    if bench is not None:
+        brows = bench["rows"]
+        assert isinstance(brows, list)
+        with (d / "benchmark.csv").open("w", newline="", encoding="utf-8") as fh:
+            w = csv.DictWriter(fh, fieldnames=list(brows[0].keys()), lineterminator="\n")
+            w.writeheader()
+            w.writerows(brows)
+    elif (d / "benchmark.csv").exists():
+        (d / "benchmark.csv").unlink()
     meta = {
         "symbol": "ABC",
         "session_date": spec.day.isoformat(),
@@ -211,6 +306,8 @@ def build(spec: Spec) -> None:
         "daily_history": daily,
         "expect": spec.expect,
     }
+    if bench is not None:
+        meta["regime"] = bench["regime"]
     (d / "meta.yaml").write_text(yaml.safe_dump(meta, sort_keys=False), encoding="utf-8")
 
 

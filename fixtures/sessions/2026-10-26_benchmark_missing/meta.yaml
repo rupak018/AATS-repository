@@ -1,0 +1,116 @@
+symbol: ABC
+session_date: '2026-10-26'
+description: Same breakout shape as the clean case but no benchmark feed -> regime
+  UNKNOWN -> REJECT, no trade.
+synthetic: true
+seed: 20
+open_volume_history:
+- 383207
+- 494465
+- 426102
+- 470474
+- 500010
+- 396971
+- 485383
+- 504840
+- 445833
+- 472292
+- 512350
+- 471807
+- 514380
+- 424905
+daily_history:
+- session_date: '2026-10-04'
+  open: '98.58'
+  high: '100.21'
+  low: '96.95'
+  close: '98.58'
+  volume: '3461995'
+- session_date: '2026-10-05'
+  open: '98.77'
+  high: '100.57'
+  low: '96.55'
+  close: '98.35'
+  volume: '2734293'
+- session_date: '2026-10-06'
+  open: '98.90'
+  high: '100.40'
+  low: '97.23'
+  close: '98.74'
+  volume: '2755910'
+- session_date: '2026-10-07'
+  open: '98.24'
+  high: '100.00'
+  low: '96.94'
+  close: '98.71'
+  volume: '2532645'
+- session_date: '2026-10-08'
+  open: '98.93'
+  high: '100.45'
+  low: '96.67'
+  close: '98.20'
+  volume: '3580499'
+- session_date: '2026-10-09'
+  open: '98.17'
+  high: '99.42'
+  low: '96.35'
+  close: '97.60'
+  volume: '2662911'
+- session_date: '2026-10-10'
+  open: '97.41'
+  high: '98.92'
+  low: '96.02'
+  close: '97.52'
+  volume: '2950078'
+- session_date: '2026-10-11'
+  open: '98.08'
+  high: '99.54'
+  low: '96.50'
+  close: '97.96'
+  volume: '2572488'
+- session_date: '2026-10-12'
+  open: '97.80'
+  high: '99.50'
+  low: '96.18'
+  close: '97.87'
+  volume: '3000031'
+- session_date: '2026-10-13'
+  open: '97.51'
+  high: '99.31'
+  low: '95.83'
+  close: '97.64'
+  volume: '3212396'
+- session_date: '2026-10-14'
+  open: '98.03'
+  high: '99.60'
+  low: '96.14'
+  close: '97.71'
+  volume: '2574623'
+- session_date: '2026-10-15'
+  open: '96.23'
+  high: '98.45'
+  low: '94.53'
+  close: '96.75'
+  volume: '3143265'
+- session_date: '2026-10-16'
+  open: '96.10'
+  high: '98.01'
+  low: '94.32'
+  close: '96.24'
+  volume: '3335530'
+- session_date: '2026-10-17'
+  open: '96.31'
+  high: '97.93'
+  low: '94.58'
+  close: '96.20'
+  volume: '2819400'
+- session_date: '2026-10-18'
+  open: '96.35'
+  high: '98.15'
+  low: '94.51'
+  close: '96.30'
+  volume: '3278894'
+expect:
+  candidates: 0
+  has_reason: REGIME_NOT_ELIGIBLE
+  regime: UNKNOWN

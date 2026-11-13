@@ -16,10 +16,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from aats.regime import load_regime_params  # noqa: E402
 from aats.replay import discover_fixtures, load_fixture, run_replay  # noqa: E402
 from aats.strategies.orb_vwap import load_params  # noqa: E402
 
 PARAMS = ROOT / "configs" / "strategy" / "orb_vwap_long_a_0.2.0-research.yaml"
+REGIME = ROOT / "configs" / "regime" / "regime-1.0.0.yaml"
 EXPECTED = ROOT / "tests" / "golden" / "expected"
 
 
@@ -32,8 +34,9 @@ def main() -> int:
         return 2
     EXPECTED.mkdir(parents=True, exist_ok=True)
     params = load_params(PARAMS)
+    regime = load_regime_params(REGIME)
     for d in discover_fixtures(ROOT / "fixtures" / "sessions"):
-        summary = run_replay(load_fixture(d), params).summary()
+        summary = run_replay(load_fixture(d), params, regime).summary()
         (EXPECTED / f"{d.name}.json").write_text(
             json.dumps(summary, indent=2, sort_keys=True) + "\n", "utf-8"
         )

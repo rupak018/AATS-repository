@@ -20,4 +20,8 @@ min_stop_distance: "0.05"
 stop_rule: S1_ORB_LOW
 proposal_expiry_minutes: 3
 last_entry_time_et: "11:30:00"
-regime_rule_version: regime-not-implemented
+regime_rule_version: regime-1.0.0
+# Research baseline evaluates every KNOWN regime and reports them separately (design 8.6).
+# UNKNOWN (missing or stale inputs) is deliberately not enabled: no data, no trade.
+# Paper-activation eligibility is decided in D-06 from training-window evidence only.
+enabled_regimes: [BULL_TREND, BEAR_TREND, RANGE_CHOP, HIGH_VOLATILITY, NEWS_SHOCK]

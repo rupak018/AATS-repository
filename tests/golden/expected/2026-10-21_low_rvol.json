@@ -59,6 +59,7 @@
       "reasons": [
         "RVOL_BELOW_MIN"
       ],
+      "regime": "RANGE_CHOP",
       "to": "2026-10-21T15:30:00+00:00"
     },
     {
@@ -68,11 +69,12 @@
       "reasons": [
         "OUTSIDE_ENTRY_WINDOW"
       ],
+      "regime": "RANGE_CHOP",
       "to": "2026-10-21T20:00:00+00:00"
     }
   ],
-  "event_count": 1156,
-  "event_log_head_hash": "2b2a244bc86f83bb400b04359fb89d4ee124b83de50f505420da845f26601a9a",
+  "event_count": 1532,
+  "event_log_head_hash": "ac114bf902abc58738e92a4b24fa2e04c68f9f398939e6df60ba0734a4dfcd2c",
   "fixture": "2026-10-21_low_rvol",
   "opening_range": {
     "high": "101.15",
@@ -83,6 +85,9 @@
     "REJECT": 106
   },
   "quality_issue_codes": [],
+  "regime_counts": {
+    "RANGE_CHOP": 376
+  },
   "session": {
     "close_utc": "2026-10-21T20:00:00+00:00",
     "early_close": false,
@@ -90,6 +95,8 @@
   },
   "versions": {
     "feature_version": "features-1.0.0",
-    "params_hash": "0da8e17db5d8f5ec8e646b7692df0ea3b07bbca73eb2611babcba8e1819d83ea"
+    "params_hash": "459dc906998f8593ea484eba8746264ad6df26bdd8eb1ee4bc5ce6cdf5315982",
+    "regime_params_hash": "a5567f02542d51b71bdc66ef02168629d32e1972eb4a61682cc4b022b619bd51",
+    "regime_rule_version": "regime-1.0.0"
   }
 }

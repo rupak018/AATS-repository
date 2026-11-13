@@ -1,0 +1,114 @@
+{
+  "checkpoints": [
+    {
+      "as_of_utc": "2026-10-27T13:45:00+00:00",
+      "atr14": "3.369286",
+      "cumulative_volume": 889298,
+      "last_close": "100.77",
+      "orb_width_atr": "0.240407",
+      "quality": "VALID",
+      "rvol_open": "2.004332",
+      "session_vwap": "100.637888"
+    },
+    {
+      "as_of_utc": "2026-10-27T14:00:00+00:00",
+      "atr14": "3.369286",
+      "cumulative_volume": 1371544,
+      "last_close": "101.14",
+      "orb_width_atr": "0.240407",
+      "quality": "VALID",
+      "rvol_open": "2.004332",
+      "session_vwap": "100.725166"
+    },
+    {
+      "as_of_utc": "2026-10-27T14:30:00+00:00",
+      "atr14": "3.369286",
+      "cumulative_volume": 2302983,
+      "last_close": "101.87",
+      "orb_width_atr": "0.240407",
+      "quality": "VALID",
+      "rvol_open": "2.004332",
+      "session_vwap": "101.063125"
+    },
+    {
+      "as_of_utc": "2026-10-27T15:30:00+00:00",
+      "atr14": "3.369286",
+      "cumulative_volume": 3258118,
+      "last_close": "102.49",
+      "orb_width_atr": "0.240407",
+      "quality": "VALID",
+      "rvol_open": "2.004332",
+      "session_vwap": "101.451923"
+    },
+    {
+      "as_of_utc": "2026-10-27T20:00:00+00:00",
+      "atr14": "3.369286",
+      "cumulative_volume": 8019148,
+      "last_close": "101.63",
+      "orb_width_atr": "0.240407",
+      "quality": "VALID",
+      "rvol_open": "2.004332",
+      "session_vwap": "101.706373"
+    }
+  ],
+  "decision_runs": [
+    {
+      "count": 8,
+      "from": "2026-10-27T13:45:00+00:00",
+      "outcome": "WAIT",
+      "reasons": [
+        "NO_BREAKOUT"
+      ],
+      "regime": "BULL_TREND",
+      "to": "2026-10-27T13:52:00+00:00"
+    },
+    {
+      "count": 98,
+      "from": "2026-10-27T13:53:00+00:00",
+      "outcome": "REJECT",
+      "reasons": [
+        "REGIME_NOT_ELIGIBLE"
+      ],
+      "regime": "UNKNOWN",
+      "to": "2026-10-27T15:30:00+00:00"
+    },
+    {
+      "count": 270,
+      "from": "2026-10-27T15:31:00+00:00",
+      "outcome": "NO_TRADE",
+      "reasons": [
+        "OUTSIDE_ENTRY_WINDOW"
+      ],
+      "regime": "UNKNOWN",
+      "to": "2026-10-27T20:00:00+00:00"
+    }
+  ],
+  "event_count": 1532,
+  "event_log_head_hash": "ec5222acfd452f133449ecebc6501fb8f7a606ccf1d20135720e5d44a603cb43",
+  "fixture": "2026-10-27_benchmark_stale",
+  "opening_range": {
+    "high": "101.06",
+    "low": "100.25"
+  },
+  "outcome_counts": {
+    "NO_TRADE": 270,
+    "REJECT": 98,
+    "WAIT": 8
+  },
+  "quality_issue_codes": [],
+  "regime_counts": {
+    "BULL_TREND": 8,
+    "UNKNOWN": 368
+  },
+  "session": {
+    "close_utc": "2026-10-27T20:00:00+00:00",
+    "early_close": false,
+    "open_utc": "2026-10-27T13:30:00+00:00"
+  },
+  "versions": {
+    "feature_version": "features-1.0.0",
+    "params_hash": "459dc906998f8593ea484eba8746264ad6df26bdd8eb1ee4bc5ce6cdf5315982",
+    "regime_params_hash": "a5567f02542d51b71bdc66ef02168629d32e1972eb4a61682cc4b022b619bd51",
+    "regime_rule_version": "regime-1.0.0"
+  }
+}

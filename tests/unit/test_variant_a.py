@@ -11,9 +11,12 @@ import pytest
 
 from aats.domain.decisions import FeatureSnapshot, OpeningRange, SessionWindow
 from aats.domain.enums import ProposalOutcome as O
-from aats.domain.enums import QualityStatus
+from aats.domain.enums import QualityStatus, RegimeLabel
 from aats.domain.enums import ReasonCode as R
+from aats.domain.regime import RegimeAssessment, RegimeInputs
+from aats.regime import classify, load_regime_params
 from aats.strategies.orb_vwap import EvalContext, OrbVwapParams, evaluate
+from tests.conftest import REGIME_FILE
 
 AS_OF = datetime(2026, 10, 14, 14, 5, tzinfo=UTC)  # 10:05 ET
 NY = ZoneInfo("America/New_York")
@@ -24,6 +27,25 @@ ORB = OpeningRange(
     end_utc=AS_OF - timedelta(minutes=20),
     bar_count=15,
 )
+
+
+REGIME_P = load_regime_params(REGIME_FILE)
+
+
+def assessment(**kw: Any) -> RegimeAssessment:
+    """Bull regime by default; override inputs to get other labels."""
+    base: dict[str, Any] = dict(
+        as_of_utc=AS_OF,
+        spy_last=Decimal("581"),
+        spy_vwap=Decimal("580"),
+        breadth_above_vwap=Decimal("0.7"),
+        spy_realized_vol_20d=Decimal("0.12"),
+        spy_5m_abs_return=Decimal("0.0005"),
+        spy_5m_abs_return_norm=Decimal("0.0012"),
+        inputs_stale=False,
+    )
+    base.update(kw)
+    return classify(RegimeInputs(**base), REGIME_P)
 
 
 def snap(**kw: Any) -> FeatureSnapshot:
@@ -55,6 +77,7 @@ def run(
     orb_status: str | None = None,
     traded: bool = False,
     local: datetime | None = None,
+    regime: RegimeAssessment | None = None,
 ):  # type: ignore[no-untyped-def]
     ctx = EvalContext(
         session=session,
@@ -63,6 +86,7 @@ def run(
         orb_status=orb_status,
         already_candidate_today=traded,
         decision_key="1",
+        regime=regime or assessment(),
     )
     return evaluate(ctx, params, local or s.as_of_utc.astimezone(NY))
 
@@ -115,7 +139,7 @@ def test_candidate_levels(params: OrbVwapParams, session: SessionWindow) -> None
     assert p.entry_reference == Decimal("101.20")
     assert p.stop_reference == Decimal("100.19")  # ORB low - 1 tick
     assert p.expires_at_utc == AS_OF + timedelta(minutes=3)
-    assert p.missing_inputs == ("regime",)  # regime gate not implemented yet - recorded, not hidden
+    assert p.missing_inputs == ()  # regime inputs complete in the default bull assessment
 
 
 def test_stop_distance_too_small(params: OrbVwapParams, session: SessionWindow) -> None:
@@ -136,3 +160,36 @@ def test_stop_distance_too_small(params: OrbVwapParams, session: SessionWindow) 
 
 def test_deterministic_ids(params: OrbVwapParams, session: SessionWindow) -> None:
     assert run(params, session, snap()).proposal_id == run(params, session, snap()).proposal_id
+
+
+def test_regime_gate_rejects_disabled_label(params: OrbVwapParams, session: SessionWindow) -> None:
+    bull_only = params.model_copy(update={"enabled_regimes": (RegimeLabel.BULL_TREND,)})
+    chop = assessment(breadth_above_vwap=Decimal("0.5"))
+    assert chop.label is RegimeLabel.RANGE_CHOP
+    p = run(bull_only, session, snap(), regime=chop)
+    assert (p.outcome, p.reason_codes[0], p.regime.label) == (
+        O.REJECT,
+        R.REGIME_NOT_ELIGIBLE,
+        RegimeLabel.RANGE_CHOP,
+    )
+    assert run(bull_only, session, snap()).outcome is O.CANDIDATE
+
+
+def test_unknown_regime_rejects_and_records_missing_inputs(
+    params: OrbVwapParams, session: SessionWindow
+) -> None:
+    p = run(params, session, snap(), regime=assessment(breadth_above_vwap=None))
+    assert (p.outcome, p.reason_codes[0]) == (O.REJECT, R.REGIME_NOT_ELIGIBLE)
+    assert p.missing_inputs == ("regime:breadth_above_vwap",)
+
+
+def test_candidate_cites_regime_assessment(params: OrbVwapParams, session: SessionWindow) -> None:
+    a = assessment()
+    p = run(params, session, snap(), regime=a)
+    assert a.assessment_id in p.supporting_evidence_refs and p.missing_inputs == ()
+
+
+def test_regime_rule_version_mismatch_is_an_error(params: OrbVwapParams, session: SessionWindow) -> None:
+    wrong = params.model_copy(update={"regime_rule_version": "regime-9.9.9"})
+    with pytest.raises(ValueError, match="regime rule version"):
+        run(wrong, session, snap())

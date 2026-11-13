@@ -9,7 +9,9 @@ Read `README.md` first. Design source of truth: AATS Design v1.2 (section number
 - No `datetime.now()`, `random`, `uuid4()` or `float()` in `aats/` (except `replay/clock.py`). Use the clock,
   `stable_id()` and `Decimal`. `tests/architecture` enforces this.
 - Contracts are frozen and `extra="forbid"`. Add fields deliberately and bump `schema_version` when breaking.
-- Strategy parameters never get code defaults (design 8). Config values are research hypotheses.
+- Strategy, regime and selection parameters never get code defaults (design 8). Config values are
+  research hypotheses.
+- Strategy `regime_rule_version` must equal the loaded regime config's `rule_version`; replay refuses otherwise.
 
 ## Workflow
 - `make check` must pass before every commit.
@@ -19,5 +21,5 @@ Read `README.md` first. Design source of truth: AATS Design v1.2 (section number
 - New reason codes: append to `ReasonCode`; never rename or reuse a value.
 
 ## Next backlog items
-AATS-006 stocks-in-play selection + regime rules · AATS-008 Risk Gate + allocation queue ·
+AATS-006b multi-symbol session replay driven by selection · AATS-008 Risk Gate + allocation queue ·
 AATS-009 simulated OMS with bracket orders · AATS-010 cost/fill model · AATS-012 LLM shadow pipeline.
