@@ -1,4 +1,4 @@
-.PHONY: install lint fmt type test golden property check golden-update fixtures replay replay-session
+.PHONY: install lint fmt type test golden property check golden-update fixtures replay replay-session viewer
 
 PY ?= python
 
@@ -44,3 +44,7 @@ replay-session:   ## example: make replay-session FIXTURE=2026-10-28_universe_bu
 		--params configs/strategy/orb_vwap_long_a_0.2.0-research.yaml \
 		--regime-params configs/regime/regime-1.0.0.yaml \
 		--selection-params configs/selection/selection-1.0.0.yaml
+
+viewer:           ## build the tester-friendly replay viewer (single HTML file)
+	$(PY) tools/build_viewer.py
+	@echo "open var/viewer/aats-replay-viewer.html in a browser"

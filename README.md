@@ -35,6 +35,14 @@ make replay FIXTURE=2026-10-14_clean_breakout           # single-symbol replay s
 make replay-session FIXTURE=2026-10-28_universe_bull    # multi-symbol session replay summary
 ```
 
+## Replay viewer (for non-technical testers)
+
+`make viewer` writes `var/viewer/aats-replay-viewer.html`: one self-contained page, no install needed.
+For every test day it shows market conditions, how stocks were chosen (multi-stock day), a price
+chart with the opening range, VWAP, buy signal and stop, a minute-by-minute decision strip, and a
+plain-English log of what the system decided and why. Source: `viewer/template.html` +
+`tools/build_viewer.py`. Simulated data only.
+
 ## How the tests are organised
 
 | Suite | What it proves | Runs |
