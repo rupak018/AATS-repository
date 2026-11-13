@@ -6,18 +6,21 @@ printed in the test id. Set AATS_PROPERTY_CASES to raise the case count in night
 
 from __future__ import annotations
 
+import dataclasses
 import os
 import random
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 
 import pytest
 
 from aats.data.quality import check_intraday_bars
 from aats.domain.decisions import SessionWindow
-from aats.domain.enums import ProposalOutcome
+from aats.domain.enums import ProposalOutcome, RegimeLabel
 from aats.domain.market import MarketBar
+from aats.domain.regime import MacroEvent, RegimeInputs
 from aats.features import opening_range, relative_volume, session_vwap_approx
+from aats.regime import RegimeParams, classify
 from aats.replay import load_fixture, run_replay
 from aats.replay.fixtures import SessionFixture
 from aats.strategies.orb_vwap import OrbVwapParams
@@ -93,32 +96,73 @@ def _perturbed(fx: SessionFixture, rng: random.Random) -> SessionFixture:
         )
         for b in fx.bars
     )
-    return SessionFixture(
-        fx.name,
-        fx.symbol,
-        fx.session_date,
-        fx.description,
-        bars,
-        fx.daily_history,
-        tuple(v * 2 for v in fx.open_volume_history),
-        fx.expectations,
+    return dataclasses.replace(
+        fx, bars=bars, open_volume_history=tuple(v * 2 for v in fx.open_volume_history)
     )
 
 
 @pytest.mark.parametrize("seed", range(max(3, CASES // 10)))
-def test_replay_invariants_under_perturbation(params: OrbVwapParams, seed: int) -> None:
+def test_replay_invariants_under_perturbation(
+    params: OrbVwapParams, regime_params: RegimeParams, seed: int
+) -> None:
     rng = random.Random(seed)
     fx = _perturbed(load_fixture(FIXTURES / "2026-10-14_clean_breakout"), rng)
-    res = run_replay(fx, params)
+    res = run_replay(fx, params, regime_params)
     cands = [p for p in res.proposals if p.outcome is ProposalOutcome.CANDIDATE]
     assert len(cands) <= 1  # no re-entry
     for p in cands:
         assert p.stop_reference is not None and p.entry_reference is not None
         assert p.stop_reference < p.entry_reference
         assert p.expires_at_utc is not None and p.expires_at_utc > p.as_of_utc
+        assert p.regime.label in params.enabled_regimes
     # no decision before the opening range is complete
     orb_end = (
         res.snapshots[0].as_of_utc - timedelta(minutes=1) + timedelta(minutes=params.opening_range_minutes)
     )
     assert all(p.as_of_utc >= orb_end for p in res.proposals)
     assert res.log.verify()
+
+
+def _random_inputs(rng: random.Random) -> RegimeInputs:
+    def maybe(v: Decimal) -> Decimal | None:
+        return None if rng.random() < 0.1 else v
+
+    t = datetime(2026, 10, 14, 14, 30, tzinfo=UTC)
+    events = tuple(
+        MacroEvent(
+            name=f"E{i}",
+            tier=rng.choice([1, 2, 3]),
+            scheduled_utc=t + timedelta(minutes=rng.randint(-90, 90)),
+        )
+        for i in range(rng.randint(0, 2))
+    )
+    return RegimeInputs(
+        as_of_utc=t,
+        spy_last=maybe(Decimal(rng.randint(57000, 59000)) / 100),
+        spy_vwap=maybe(Decimal(rng.randint(57000, 59000)) / 100),
+        breadth_above_vwap=maybe(Decimal(rng.randint(0, 100)) / 100),
+        spy_realized_vol_20d=maybe(Decimal(rng.randint(5, 60)) / 100),
+        spy_5m_abs_return=maybe(Decimal(rng.randint(0, 80)) / 10000),
+        spy_5m_abs_return_norm=maybe(Decimal(rng.randint(0, 20)) / 10000),
+        macro_events=events,
+        inputs_stale=rng.random() < 0.05,
+    )
+
+
+@pytest.mark.parametrize("seed", range(CASES))
+def test_regime_classification_invariants(regime_params: RegimeParams, seed: int) -> None:
+    x = _random_inputs(random.Random(seed))
+    a = classify(x, regime_params)
+    assert (a.label is RegimeLabel.UNKNOWN) == bool(a.missing_inputs)
+    assert classify(x, regime_params) == a  # pure / deterministic
+    in_window = any(
+        e.tier <= regime_params.macro_min_tier
+        and e.scheduled_utc - timedelta(minutes=regime_params.macro_window_before_minutes)
+        <= x.as_of_utc
+        <= e.scheduled_utc + timedelta(minutes=regime_params.macro_window_after_minutes)
+        for e in x.macro_events
+    )
+    if not a.missing_inputs and in_window:
+        assert a.label is RegimeLabel.NEWS_SHOCK  # precedence: shock beats volatility and trend
+    if a.label is RegimeLabel.BULL_TREND:
+        assert x.spy_last is not None and x.spy_vwap is not None and x.spy_last > x.spy_vwap

@@ -9,17 +9,24 @@ import pytest
 from aats.calendar import default_calendar
 from aats.domain.decisions import SessionWindow
 from aats.domain.market import MarketBar
+from aats.regime import RegimeParams, load_regime_params
 from aats.strategies.orb_vwap import OrbVwapParams, load_params
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "fixtures" / "sessions"
 GOLDEN = ROOT / "tests" / "golden" / "expected"
 PARAMS_FILE = ROOT / "configs" / "strategy" / "orb_vwap_long_a_0.2.0-research.yaml"
+REGIME_FILE = ROOT / "configs" / "regime" / "regime-1.0.0.yaml"
 
 
 @pytest.fixture(scope="session")
 def params() -> OrbVwapParams:
     return load_params(PARAMS_FILE)
+
+
+@pytest.fixture(scope="session")
+def regime_params() -> RegimeParams:
+    return load_regime_params(REGIME_FILE)
 
 
 @pytest.fixture(scope="session")

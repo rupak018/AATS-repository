@@ -59,6 +59,7 @@
       "reasons": [
         "NO_BREAKOUT"
       ],
+      "regime": "BEAR_TREND",
       "to": "2026-10-22T14:06:00+00:00"
     },
     {
@@ -68,11 +69,12 @@
       "reasons": [
         "DATA_QUALITY_FAILED"
       ],
+      "regime": "BEAR_TREND",
       "to": "2026-10-22T20:00:00+00:00"
     }
   ],
-  "event_count": 1159,
-  "event_log_head_hash": "06fcbc859ec1044202f942cd3f325c3d597d25576d3ea0c1b73ca649d8ea9e3b",
+  "event_count": 1536,
+  "event_log_head_hash": "9ec7f03776c0606f2853f221dda58dee1a55cb231688a049a9b9a997a8f7244f",
   "fixture": "2026-10-22_duplicate_bar",
   "opening_range": {
     "high": "101.13",
@@ -85,6 +87,9 @@
   "quality_issue_codes": [
     "DUPLICATE_BAR"
   ],
+  "regime_counts": {
+    "BEAR_TREND": 377
+  },
   "session": {
     "close_utc": "2026-10-22T20:00:00+00:00",
     "early_close": false,
@@ -92,6 +97,8 @@
   },
   "versions": {
     "feature_version": "features-1.0.0",
-    "params_hash": "0da8e17db5d8f5ec8e646b7692df0ea3b07bbca73eb2611babcba8e1819d83ea"
+    "params_hash": "459dc906998f8593ea484eba8746264ad6df26bdd8eb1ee4bc5ce6cdf5315982",
+    "regime_params_hash": "a5567f02542d51b71bdc66ef02168629d32e1972eb4a61682cc4b022b619bd51",
+    "regime_rule_version": "regime-1.0.0"
   }
 }

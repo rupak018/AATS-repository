@@ -35,4 +35,5 @@ fixtures:         ## regenerate synthetic fixtures (deterministic; normally neve
 	$(PY) tools/make_fixtures.py
 
 replay:           ## example: make replay FIXTURE=2026-10-14_clean_breakout
-	aats-replay fixtures/sessions/$(FIXTURE) --params configs/strategy/orb_vwap_long_a_0.2.0-research.yaml
+	aats-replay fixtures/sessions/$(FIXTURE) --params configs/strategy/orb_vwap_long_a_0.2.0-research.yaml \
+		--regime-params configs/regime/regime-1.0.0.yaml

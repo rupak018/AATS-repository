@@ -53,12 +53,23 @@
   ],
   "decision_runs": [
     {
-      "count": 17,
+      "count": 10,
       "from": "2026-11-02T14:45:00+00:00",
       "outcome": "WAIT",
       "reasons": [
         "NO_BREAKOUT"
       ],
+      "regime": "BULL_TREND",
+      "to": "2026-11-02T14:54:00+00:00"
+    },
+    {
+      "count": 7,
+      "from": "2026-11-02T14:55:00+00:00",
+      "outcome": "WAIT",
+      "reasons": [
+        "NO_BREAKOUT"
+      ],
+      "regime": "NEWS_SHOCK",
       "to": "2026-11-02T15:01:00+00:00"
     },
     {
@@ -71,21 +82,33 @@
         "ORB_BREAKOUT_CONFIRMED",
         "ABOVE_SESSION_VWAP"
       ],
+      "regime": "NEWS_SHOCK",
       "stop_reference": "100.27",
       "to": "2026-11-02T15:02:00+00:00"
     },
     {
-      "count": 358,
+      "count": 28,
       "from": "2026-11-02T15:03:00+00:00",
       "outcome": "NO_TRADE",
       "reasons": [
         "ALREADY_TRADED_TODAY"
       ],
+      "regime": "NEWS_SHOCK",
+      "to": "2026-11-02T15:30:00+00:00"
+    },
+    {
+      "count": 330,
+      "from": "2026-11-02T15:31:00+00:00",
+      "outcome": "NO_TRADE",
+      "reasons": [
+        "ALREADY_TRADED_TODAY"
+      ],
+      "regime": "BULL_TREND",
       "to": "2026-11-02T21:00:00+00:00"
     }
   ],
-  "event_count": 1156,
-  "event_log_head_hash": "540c02e93836c781a3c7beac908496604955fc65340983b7017ecf1b57f29f93",
+  "event_count": 1532,
+  "event_log_head_hash": "adecca3aff0ab47c0b39c0920451f6785a53095b5aa294a9ba31d59ee0e42c0c",
   "fixture": "2026-11-02_dst_breakout",
   "opening_range": {
     "high": "101.09",
@@ -97,6 +120,10 @@
     "WAIT": 17
   },
   "quality_issue_codes": [],
+  "regime_counts": {
+    "BULL_TREND": 340,
+    "NEWS_SHOCK": 36
+  },
   "session": {
     "close_utc": "2026-11-02T21:00:00+00:00",
     "early_close": false,
@@ -104,6 +131,8 @@
   },
   "versions": {
     "feature_version": "features-1.0.0",
-    "params_hash": "0da8e17db5d8f5ec8e646b7692df0ea3b07bbca73eb2611babcba8e1819d83ea"
+    "params_hash": "459dc906998f8593ea484eba8746264ad6df26bdd8eb1ee4bc5ce6cdf5315982",
+    "regime_params_hash": "a5567f02542d51b71bdc66ef02168629d32e1972eb4a61682cc4b022b619bd51",
+    "regime_rule_version": "regime-1.0.0"
   }
 }

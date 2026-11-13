@@ -38,6 +38,8 @@ FORBIDDEN = {
     "strategies": ("aats.execution", "aats.risk", "aats.llm"),
     "features": ("aats.execution", "aats.risk", "aats.llm", "aats.strategies"),
     "domain": ("aats.execution", "aats.risk", "aats.llm", "aats.strategies", "aats.replay"),
+    "regime": ("aats.execution", "aats.risk", "aats.llm", "aats.strategies", "aats.replay"),
+    "selection": ("aats.execution", "aats.risk", "aats.llm", "aats.strategies", "aats.replay"),
     # Risk is deterministic: no LLM imports.
     "risk": ("aats.llm",),
 }

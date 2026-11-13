@@ -4,8 +4,8 @@ Deterministic, replayable research system for a long-only 15-minute Opening Rang
 strategy on US equities. **Paper and replay only — there is no live-trading mode.** Design reference:
 *AATS Design v1.2*.
 
-This repository is the first vertical slice (milestones M1–M2, backlog AATS-001…005 and the variant A
-rule set from AATS-007):
+Built so far: milestones M1–M2 (backlog AATS-001…005), the variant A rule set (AATS-007) and
+stocks-in-play selection plus regime rules (AATS-006):
 
 | Area | Where | Status |
 |---|---|---|
@@ -14,10 +14,15 @@ rule set from AATS-007):
 | NYSE session calendar | `aats/calendar/` | 2025–2027, DST and early closes; CI cross-checks against `exchange_calendars` |
 | Data-quality sentinel | `aats/data/quality.py` | gaps, duplicates, out-of-order, provisional, single-venue, outside-session |
 | Feature engine | `aats/features/` | ORB, VWAP (approx), ATR, opening-interval RVOL, ORB width/ATR — Decimal, versioned |
-| Strategy variant A | `aats/strategies/orb_vwap/` | close-confirmation rules, every branch has a reason code |
+| Regime rules | `aats/regime/`, `configs/regime/` | design 8.6 precedence: UNKNOWN > NEWS_SHOCK > HIGH_VOLATILITY > BULL > BEAR > RANGE_CHOP; realised-vol fallback until VIX is licensed |
+| Stocks-in-play selection | `aats/selection/`, `configs/selection/` | stage 1 pre-market watchlist (type, exchange, IPO, corporate action, price, volume, $ volume, ATR) and stage 2 RVOL top-N, with every gate result and truncation recorded |
+| Strategy variant A | `aats/strategies/orb_vwap/` | close-confirmation rules incl. regime eligibility gate, every branch has a reason code |
 | Replay harness | `aats/replay/` | replay clock, hash-chained event log, deterministic IDs, CLI |
-| Golden fixtures | `fixtures/sessions/`, `tests/golden/expected/` | 9 synthetic sessions incl. DST, early close, faults |
-| Planned packages | `selection/ risk/ execution/ llm/ orchestration/ backtest/ persistence/ monitoring/` | placeholders with boundaries already enforced by tests |
+| Golden fixtures | `fixtures/sessions/`, `tests/golden/expected/` | 11 synthetic sessions incl. DST, early close, data faults, missing and stale benchmark feed; each with SPY benchmark + breadth for regime inputs |
+| Planned packages | `risk/ execution/ llm/ orchestration/ backtest/ persistence/ monitoring/` | placeholders with boundaries already enforced by tests |
+
+Selection is a tested, standalone module; replay is still single-symbol, so wiring selection into a
+multi-symbol session replay is the next step (AATS-006b).
 
 ## Quick start
 
@@ -25,7 +30,7 @@ rule set from AATS-007):
 python -m venv .venv && source .venv/bin/activate      # Python 3.12+
 make install
 make check                                              # lint + types + tests + golden
-make replay FIXTURE=2026-10-14_clean_breakout           # print a replay summary
+make replay FIXTURE=2026-10-14_clean_breakout           # print a replay summary (with regime)
 ```
 
 ## How the tests are organised

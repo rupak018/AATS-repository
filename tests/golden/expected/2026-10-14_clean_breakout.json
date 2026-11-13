@@ -59,6 +59,7 @@
       "reasons": [
         "NO_BREAKOUT"
       ],
+      "regime": "BULL_TREND",
       "to": "2026-10-14T14:04:00+00:00"
     },
     {
@@ -71,6 +72,7 @@
         "ORB_BREAKOUT_CONFIRMED",
         "ABOVE_SESSION_VWAP"
       ],
+      "regime": "BULL_TREND",
       "stop_reference": "100.30",
       "to": "2026-10-14T14:05:00+00:00"
     },
@@ -81,11 +83,12 @@
       "reasons": [
         "ALREADY_TRADED_TODAY"
       ],
+      "regime": "BULL_TREND",
       "to": "2026-10-14T20:00:00+00:00"
     }
   ],
-  "event_count": 1156,
-  "event_log_head_hash": "a300a1f0b082ae8e2e2996f2022afdb51ff9cb8d6a7281f1cc4c655fa43aac92",
+  "event_count": 1532,
+  "event_log_head_hash": "f4523dd4200e632fe6534a572edb8518f59727897ae2490b02ed0e284dc7243f",
   "fixture": "2026-10-14_clean_breakout",
   "opening_range": {
     "high": "101.18",
@@ -97,6 +100,9 @@
     "WAIT": 20
   },
   "quality_issue_codes": [],
+  "regime_counts": {
+    "BULL_TREND": 376
+  },
   "session": {
     "close_utc": "2026-10-14T20:00:00+00:00",
     "early_close": false,
@@ -104,6 +110,8 @@
   },
   "versions": {
     "feature_version": "features-1.0.0",
-    "params_hash": "0da8e17db5d8f5ec8e646b7692df0ea3b07bbca73eb2611babcba8e1819d83ea"
+    "params_hash": "459dc906998f8593ea484eba8746264ad6df26bdd8eb1ee4bc5ce6cdf5315982",
+    "regime_params_hash": "a5567f02542d51b71bdc66ef02168629d32e1972eb4a61682cc4b022b619bd51",
+    "regime_rule_version": "regime-1.0.0"
   }
 }

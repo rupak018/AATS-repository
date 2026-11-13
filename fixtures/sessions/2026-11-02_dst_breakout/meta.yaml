@@ -113,3 +113,32 @@ daily_history:
 expect:
   candidates: 1
   open_utc: '2026-11-02T14:30:00+00:00'
+  regime: NEWS_SHOCK
+regime:
+  spy_daily_closes:
+  - '572.65'
+  - '571.36'
+  - '569.96'
+  - '570.22'
+  - '568.34'
+  - '564.88'
+  - '559.79'
+  - '560.12'
+  - '559.44'
+  - '561.21'
+  - '564.30'
+  - '566.73'
+  - '562.50'
+  - '563.56'
+  - '568.54'
+  - '564.99'
+  - '572.13'
+  - '574.68'
+  - '582.38'
+  - '579.40'
+  - '578.09'
+  spy_5m_abs_return_norm: '0.0012'
+  macro_events:
+  - name: SYNTHETIC_TIER1_RELEASE
+    tier: 1
+    scheduled_utc: '2026-11-02T15:00:00+00:00'

@@ -1,0 +1,15 @@
+# Stocks-in-play selection (design 8.1). Price, volume, ATR, RVOL and top-N follow the published
+# stocks-in-play ORB study so the R0 replication baseline is faithful. All values are Hypotheses (D-03).
+policy_version: selection-1.0.0
+allowed_security_types: [COMMON_STOCK]
+allowed_exchanges: [XNYS, XNAS]
+ipo_exclusion_sessions: 20
+min_price: "5.00"
+min_avg_daily_volume: 1000000
+min_avg_dollar_volume: "10000000"
+min_atr: "0.50"
+history_sessions: 14
+watchlist_max: 50
+rvol_min: "1.0"
+rvol_min_history_sessions: 10
+top_n: 20

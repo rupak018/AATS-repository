@@ -1,0 +1,140 @@
+symbol: ABC
+session_date: '2026-10-27'
+description: Benchmark feed stops at 09:50 before the breakout -> inputs stale ->
+  UNKNOWN -> REJECT, no trade.
+synthetic: true
+seed: 21
+open_volume_history:
+- 446635
+- 491637
+- 380742
+- 413594
+- 382068
+- 476201
+- 407109
+- 473702
+- 473687
+- 510777
+- 401993
+- 433174
+- 483091
+- 437223
+daily_history:
+- session_date: '2026-10-05'
+  open: '99.94'
+  high: '101.62'
+  low: '97.73'
+  close: '99.40'
+  volume: '2936778'
+- session_date: '2026-10-06'
+  open: '99.31'
+  high: '100.76'
+  low: '97.73'
+  close: '99.17'
+  volume: '3408240'
+- session_date: '2026-10-07'
+  open: '99.05'
+  high: '100.46'
+  low: '96.85'
+  close: '98.26'
+  volume: '2971264'
+- session_date: '2026-10-08'
+  open: '97.63'
+  high: '100.21'
+  low: '95.93'
+  close: '98.50'
+  volume: '2906616'
+- session_date: '2026-10-09'
+  open: '98.26'
+  high: '99.78'
+  low: '96.68'
+  close: '98.20'
+  volume: '3382666'
+- session_date: '2026-10-10'
+  open: '98.71'
+  high: '99.95'
+  low: '97.15'
+  close: '98.39'
+  volume: '2944632'
+- session_date: '2026-10-11'
+  open: '96.73'
+  high: '98.33'
+  low: '94.98'
+  close: '96.58'
+  volume: '3501513'
+- session_date: '2026-10-12'
+  open: '97.19'
+  high: '98.81'
+  low: '95.16'
+  close: '96.78'
+  volume: '2488921'
+- session_date: '2026-10-13'
+  open: '95.78'
+  high: '97.24'
+  low: '94.56'
+  close: '96.02'
+  volume: '2643859'
+- session_date: '2026-10-14'
+  open: '95.87'
+  high: '97.68'
+  low: '94.28'
+  close: '96.10'
+  volume: '2905738'
+- session_date: '2026-10-15'
+  open: '95.68'
+  high: '97.12'
+  low: '93.72'
+  close: '95.16'
+  volume: '3455349'
+- session_date: '2026-10-16'
+  open: '95.02'
+  high: '96.74'
+  low: '93.76'
+  close: '95.48'
+  volume: '2800413'
+- session_date: '2026-10-17'
+  open: '95.85'
+  high: '97.49'
+  low: '94.29'
+  close: '95.93'
+  volume: '2641019'
+- session_date: '2026-10-18'
+  open: '95.23'
+  high: '97.57'
+  low: '93.49'
+  close: '95.83'
+  volume: '3112349'
+- session_date: '2026-10-19'
+  open: '97.11'
+  high: '98.66'
+  low: '95.11'
+  close: '96.66'
+  volume: '3531967'
+expect:
+  candidates: 0
+  has_reason: REGIME_NOT_ELIGIBLE
+regime:
+  spy_daily_closes:
+  - '582.24'
+  - '580.69'
+  - '573.28'
+  - '578.79'
+  - '577.39'
+  - '579.75'
+  - '575.42'
+  - '575.74'
+  - '580.87'
+  - '581.15'
+  - '584.38'
+  - '578.34'
+  - '577.59'
+  - '581.42'
+  - '579.67'
+  - '579.25'
+  - '577.48'
+  - '577.99'
+  - '575.28'
+  - '574.78'
+  - '575.68'
+  spy_5m_abs_return_norm: '0.0012'
+  macro_events: []

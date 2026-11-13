@@ -3,10 +3,10 @@
 Pure function of its inputs: no I/O, no clock, no randomness. Each finalised 1-minute bar after the
 opening range yields exactly one TradeProposal with stable reason codes.
 
-Not yet implemented in this milestone (tracked in the backlog): regime eligibility (AATS-006),
-stocks-in-play ranking across symbols (AATS-006), spread gate from NBBO quotes (needs quote replay).
-Until then the regime is recorded as UNKNOWN with `missing_inputs=("regime",)`; proposals from this
-module are replay-only and never reach the Risk Gate.
+The regime gate (design 8.6) rejects any decision whose regime label is not in the strategy version's
+`enabled_regimes`; UNKNOWN regimes carry their missing inputs into the proposal. Not yet implemented:
+the spread gate from NBBO quotes (needs quote replay). Proposals are replay-only until the Risk Gate
+(AATS-008) exists.
 """
 
 from __future__ import annotations
@@ -17,8 +17,9 @@ from decimal import Decimal
 from typing import Any
 
 from aats.domain.decisions import FeatureSnapshot, RegimeRef, SessionWindow, TradeProposal
-from aats.domain.enums import ProposalOutcome, QualityStatus, ReasonCode, RegimeLabel
+from aats.domain.enums import ProposalOutcome, QualityStatus, ReasonCode
 from aats.domain.ids import stable_id
+from aats.domain.regime import RegimeAssessment
 from aats.features.calc import q6
 from aats.strategies.orb_vwap.params import OrbVwapParams
 
@@ -33,6 +34,7 @@ class EvalContext:
     orb_status: str | None  # None, "ORB_NOT_READY" or "ORB_INCOMPLETE"
     already_candidate_today: bool
     decision_key: str  # unique per decision point (e.g. event sequence), keeps IDs unique on duplicates
+    regime: RegimeAssessment
 
 
 def evaluate(ctx: EvalContext, p: OrbVwapParams, exchange_time: datetime) -> TradeProposal:
@@ -42,6 +44,10 @@ def evaluate(ctx: EvalContext, p: OrbVwapParams, exchange_time: datetime) -> Tra
     passed in so this function stays free of time-zone logic.
     """
     s = ctx.snapshot
+    if ctx.regime.rule_version != p.regime_rule_version:
+        raise ValueError(
+            f"regime rule version {ctx.regime.rule_version} != strategy's {p.regime_rule_version}"
+        )
     base: dict[str, Any] = dict(
         proposal_id=stable_id(
             "proposal",
@@ -59,9 +65,9 @@ def evaluate(ctx: EvalContext, p: OrbVwapParams, exchange_time: datetime) -> Tra
         variant=p.variant,
         strategy_version=p.strategy_version,
         feature_snapshot_id=s.snapshot_id,
-        regime=RegimeRef(label=RegimeLabel.UNKNOWN, rule_version=p.regime_rule_version),
-        missing_inputs=("regime",),
-        supporting_evidence_refs=(s.snapshot_id,),
+        regime=RegimeRef(label=ctx.regime.label, rule_version=ctx.regime.rule_version),
+        missing_inputs=tuple(f"regime:{m}" for m in ctx.regime.missing_inputs),
+        supporting_evidence_refs=(s.snapshot_id, ctx.regime.assessment_id),
     )
 
     def out(outcome: ProposalOutcome, *codes: ReasonCode, **extra: object) -> TradeProposal:
@@ -77,6 +83,8 @@ def evaluate(ctx: EvalContext, p: OrbVwapParams, exchange_time: datetime) -> Tra
         return out(ProposalOutcome.NO_TRADE, RC.ORB_INCOMPLETE)
     if exchange_time.time() > p.last_entry_time_et:
         return out(ProposalOutcome.NO_TRADE, RC.OUTSIDE_ENTRY_WINDOW)
+    if ctx.regime.label not in p.enabled_regimes:
+        return out(ProposalOutcome.REJECT, RC.REGIME_NOT_ELIGIBLE)
     if s.atr14 is None or s.atr14 < p.min_atr:
         return out(ProposalOutcome.REJECT, RC.ATR_BELOW_MIN)
     if s.last_close < p.min_price:

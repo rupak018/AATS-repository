@@ -59,6 +59,7 @@
       "reasons": [
         "NO_BREAKOUT"
       ],
+      "regime": "BULL_TREND",
       "to": "2026-10-20T13:46:00+00:00"
     },
     {
@@ -68,6 +69,7 @@
       "reasons": [
         "OVEREXTENDED"
       ],
+      "regime": "BULL_TREND",
       "to": "2026-10-20T15:30:00+00:00"
     },
     {
@@ -77,11 +79,12 @@
       "reasons": [
         "OUTSIDE_ENTRY_WINDOW"
       ],
+      "regime": "BULL_TREND",
       "to": "2026-10-20T20:00:00+00:00"
     }
   ],
-  "event_count": 1156,
-  "event_log_head_hash": "4bd5499ac81b7c0713dfec1002c877dfeb06b278b1c2843d3ff356a285c23984",
+  "event_count": 1532,
+  "event_log_head_hash": "694e1639a2bdbef0a04da1ca1a47cc2cd219922f83f64be562b5c455a1415926",
   "fixture": "2026-10-20_overextended_spike",
   "opening_range": {
     "high": "101.12",
@@ -93,6 +96,9 @@
     "WAIT": 2
   },
   "quality_issue_codes": [],
+  "regime_counts": {
+    "BULL_TREND": 376
+  },
   "session": {
     "close_utc": "2026-10-20T20:00:00+00:00",
     "early_close": false,
@@ -100,6 +106,8 @@
   },
   "versions": {
     "feature_version": "features-1.0.0",
-    "params_hash": "0da8e17db5d8f5ec8e646b7692df0ea3b07bbca73eb2611babcba8e1819d83ea"
+    "params_hash": "459dc906998f8593ea484eba8746264ad6df26bdd8eb1ee4bc5ce6cdf5315982",
+    "regime_params_hash": "a5567f02542d51b71bdc66ef02168629d32e1972eb4a61682cc4b022b619bd51",
+    "regime_rule_version": "regime-1.0.0"
   }
 }

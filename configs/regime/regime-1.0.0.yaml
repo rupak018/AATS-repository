@@ -1,0 +1,12 @@
+# Regime rules (design 8.6). Every threshold is a research Hypothesis, fixed in decision D-06.
+# volatility_source REALIZED is the labelled fallback until VIX/VIX3M data is licensed.
+rule_version: regime-1.0.0
+volatility_source: REALIZED
+vix_high: "25"
+realized_vol_high: "0.30"
+macro_min_tier: 1
+macro_window_before_minutes: 5
+macro_window_after_minutes: 30
+shock_multiple: "4"
+breadth_bull_min: "0.60"
+breadth_bear_max: "0.40"

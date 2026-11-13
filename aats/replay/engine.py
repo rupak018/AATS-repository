@@ -1,7 +1,7 @@
 """Deterministic replay engine (backlog AATS-003).
 
-Feeds fixture bars, in arrival order, through data quality -> features -> strategy variant A,
-recording every input and output in a hash-chained event log. The engine reads time only from the
+Feeds fixture bars, in arrival order, through data quality -> features -> regime rules -> strategy
+variant A, recording every input and output in a hash-chained event log. The engine reads time only from the
 ReplayClock, uses deterministic IDs and Decimal arithmetic, so the same fixture + parameters always
 produce the same event-log head hash.
 """
@@ -16,10 +16,12 @@ from typing import Any
 
 from aats.calendar import SessionCalendar, default_calendar
 from aats.data.quality import check_intraday_bars
+from aats.domain.base import canonical_dumps, sha256_hex
 from aats.domain.decisions import FeatureSnapshot, TradeProposal
 from aats.domain.enums import ProposalOutcome
 from aats.domain.ids import stable_id
 from aats.domain.market import MarketBar
+from aats.domain.regime import RegimeAssessment, RegimeInputs
 from aats.features.calc import (
     FEATURE_VERSION,
     atr_sma,
@@ -28,6 +30,7 @@ from aats.features.calc import (
     relative_volume,
     session_vwap_approx,
 )
+from aats.regime import RegimeParams, abs_return, classify, realized_vol_annualised
 from aats.replay.clock import ReplayClock
 from aats.replay.event_log import EventLog
 from aats.replay.fixtures import SessionFixture
@@ -35,6 +38,7 @@ from aats.strategies.orb_vwap.params import OrbVwapParams
 from aats.strategies.orb_vwap.variant_a import EvalContext, evaluate
 
 CHECKPOINT_MINUTES = (15, 30, 60, 120)
+BENCHMARK_MAX_LAG = timedelta(minutes=1)
 
 
 @dataclass(frozen=True)
@@ -48,6 +52,8 @@ class ReplayResult:
     session_close_utc: str
     early_close: bool
     params_hash: str
+    regime_params_hash: str
+    regime_rule_version: str
 
     @property
     def digest(self) -> str:
@@ -70,11 +76,17 @@ class ReplayResult:
                 "close_utc": self.session_close_utc,
                 "early_close": self.early_close,
             },
-            "versions": {"feature_version": FEATURE_VERSION, "params_hash": self.params_hash},
+            "versions": {
+                "feature_version": FEATURE_VERSION,
+                "params_hash": self.params_hash,
+                "regime_rule_version": self.regime_rule_version,
+                "regime_params_hash": self.regime_params_hash,
+            },
             "quality_issue_codes": sorted(set(self.quality_issue_codes)),
             "opening_range": None if orb is None else {"high": str(orb.high), "low": str(orb.low)},
             "checkpoints": checkpoints,
             "outcome_counts": dict(sorted(Counter(p.outcome.value for p in self.proposals).items())),
+            "regime_counts": dict(sorted(Counter(p.regime.label.value for p in self.proposals).items())),
             "decision_runs": _runs(self.proposals),
             "event_count": len(self.log),
             "event_log_head_hash": self.digest,
@@ -98,7 +110,7 @@ def _runs(proposals: tuple[TradeProposal, ...]) -> list[dict[str, Any]]:
     """Compress consecutive identical decisions into runs; candidates are always listed in full."""
     runs: list[dict[str, Any]] = []
     for p in proposals:
-        key = (p.outcome.value, [r.value for r in p.reason_codes])
+        key = (p.outcome.value, [r.value for r in p.reason_codes], p.regime.label.value)
         if p.outcome is ProposalOutcome.CANDIDATE:
             runs.append(
                 {
@@ -107,13 +119,19 @@ def _runs(proposals: tuple[TradeProposal, ...]) -> list[dict[str, Any]]:
                     "count": 1,
                     "outcome": key[0],
                     "reasons": key[1],
+                    "regime": key[2],
                     "entry_reference": str(p.entry_reference),
                     "stop_reference": str(p.stop_reference),
                     "expires_at_utc": p.expires_at_utc.isoformat() if p.expires_at_utc else None,
                 }
             )
             continue
-        if runs and (runs[-1]["outcome"], runs[-1]["reasons"]) == key and "entry_reference" not in runs[-1]:
+        last = runs[-1] if runs else None
+        if (
+            last
+            and (last["outcome"], last["reasons"], last["regime"]) == key
+            and "entry_reference" not in last
+        ):
             runs[-1]["to"] = p.as_of_utc.isoformat()
             runs[-1]["count"] += 1
         else:
@@ -124,17 +142,45 @@ def _runs(proposals: tuple[TradeProposal, ...]) -> list[dict[str, Any]]:
                     "count": 1,
                     "outcome": key[0],
                     "reasons": key[1],
+                    "regime": key[2],
                 }
             )
     return runs
 
 
+def regime_inputs_at(fx: SessionFixture, as_of: datetime, now: datetime) -> RegimeInputs:
+    """Build point-in-time regime inputs from benchmark data that had arrived by `now`."""
+    spy = sorted(
+        (b for b in fx.benchmark_bars if b.received_at_utc <= now and b.is_final), key=lambda b: b.start_utc
+    )
+    last = spy[-1] if spy else None
+    stale = last is None or last.end_utc < as_of - BENCHMARK_MAX_LAG
+    breadth = dict(fx.breadth)
+    five_ago = next(
+        (b for b in reversed(spy) if last and b.end_utc == last.end_utc - timedelta(minutes=5)), None
+    )
+    return RegimeInputs(
+        as_of_utc=as_of,
+        spy_last=last.close if last else None,
+        spy_vwap=session_vwap_approx(spy) if spy else None,
+        breadth_above_vwap=breadth.get(last.start_utc) if last else None,
+        spy_realized_vol_20d=realized_vol_annualised(list(fx.spy_daily_closes)),
+        spy_5m_abs_return=abs_return(last.close, five_ago.close) if last and five_ago else None,
+        spy_5m_abs_return_norm=fx.spy_5m_abs_return_norm,
+        macro_events=fx.macro_events,
+        inputs_stale=stale,
+    )
+
+
 def run_replay(
     fx: SessionFixture,
     params: OrbVwapParams,
+    regime_params: RegimeParams,
     calendar: SessionCalendar | None = None,
     log_path: Path | None = None,
 ) -> ReplayResult:
+    if regime_params.rule_version != params.regime_rule_version:
+        raise ValueError("strategy params and regime params reference different regime rule versions")
     cal = calendar or default_calendar()
     session = cal.session(fx.session_date)
     session_id = stable_id("session", fx.session_date.isoformat(), params.strategy_version)
@@ -189,6 +235,8 @@ def run_replay(
 
         if bar.end_utc < orb_end:
             continue  # never evaluate an incomplete opening range
+        regime: RegimeAssessment = classify(regime_inputs_at(fx, bar.end_utc, now), regime_params)
+        log.append("RegimeAssessment", regime, now)
         ctx = EvalContext(
             session=session,
             session_id=session_id,
@@ -196,6 +244,7 @@ def run_replay(
             orb_status=orb_res.reason,
             already_candidate_today=has_candidate,
             decision_key=str(bar_event.seq),
+            regime=regime,
         )
         proposal = evaluate(ctx, params, cal.to_exchange_time(bar.end_utc))
         log.append("TradeProposal", proposal, now)
@@ -212,4 +261,6 @@ def run_replay(
         session_close_utc=session.close_utc.isoformat(),
         early_close=session.early_close,
         params_hash=params.parameter_hash(),
+        regime_params_hash=sha256_hex(canonical_dumps(regime_params.model_dump(mode="json"))),
+        regime_rule_version=regime_params.rule_version,
     )
