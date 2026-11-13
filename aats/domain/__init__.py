@@ -17,6 +17,7 @@ from aats.domain.decisions import (
 )
 from aats.domain.llm import LLMCallRecord, is_contaminated, llm_cache_key
 from aats.domain.market import DailyBar, MarketBar, QuoteSnapshot
+from aats.domain.regime import MacroEvent, RegimeAssessment, RegimeInputs
 
 __all__ = [
     "SCHEMA_VERSION",
@@ -28,12 +29,15 @@ __all__ = [
     "ExposureAfter",
     "FeatureSnapshot",
     "LLMCallRecord",
+    "MacroEvent",
     "MarketBar",
     "Money",
     "OpeningRange",
     "OrderIntent",
     "ProtectiveStop",
     "QuoteSnapshot",
+    "RegimeAssessment",
+    "RegimeInputs",
     "RegimeRef",
     "RiskDecision",
     "SessionWindow",
