@@ -20,8 +20,8 @@ jobs:
     name: lint + types
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -41,8 +41,8 @@ jobs:
       # Nightly runs use far more property cases; PRs stay fast.
       AATS_PROPERTY_CASES: ${{ github.event_name == 'schedule' && '1000' || '60' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
           cache: pip
@@ -59,7 +59,7 @@ jobs:
           python tools/update_golden.py --yes
           git diff --stat tests/golden/expected
           git diff tests/golden/expected > golden.diff || true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: golden-diff-py${{ matrix.python }}
