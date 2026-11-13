@@ -10,6 +10,7 @@ from aats.calendar import default_calendar
 from aats.domain.decisions import SessionWindow
 from aats.domain.market import MarketBar
 from aats.regime import RegimeParams, load_regime_params
+from aats.selection import SelectionParams, load_selection_params
 from aats.strategies.orb_vwap import OrbVwapParams, load_params
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,6 +18,8 @@ FIXTURES = ROOT / "fixtures" / "sessions"
 GOLDEN = ROOT / "tests" / "golden" / "expected"
 PARAMS_FILE = ROOT / "configs" / "strategy" / "orb_vwap_long_a_0.2.0-research.yaml"
 REGIME_FILE = ROOT / "configs" / "regime" / "regime-1.0.0.yaml"
+SELECTION_FILE = ROOT / "configs" / "selection" / "selection-1.0.0.yaml"
+UNIVERSE_FIXTURES = ROOT / "fixtures" / "universe"
 
 
 @pytest.fixture(scope="session")
@@ -27,6 +30,11 @@ def params() -> OrbVwapParams:
 @pytest.fixture(scope="session")
 def regime_params() -> RegimeParams:
     return load_regime_params(REGIME_FILE)
+
+
+@pytest.fixture(scope="session")
+def selection_params() -> SelectionParams:
+    return load_selection_params(SELECTION_FILE)
 
 
 @pytest.fixture(scope="session")

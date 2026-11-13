@@ -1,0 +1,1030 @@
+session_date: '2026-10-28'
+description: Nine-symbol universe covering every stage-1 and stage-2 selection outcome,
+  two breakout candidates and one overextended rejection, in a bull regime.
+synthetic: true
+seed: 31
+expect:
+  watchlist_rejected:
+    EEE: SECURITY_TYPE
+    FFF: PRICE
+    GGG: IPO_WINDOW
+    JJJ: PREMARKET_STATS
+  failed_rvol:
+  - DDD
+  candidate_symbols:
+  - AAA
+  - BBB
+  has_reason:
+    HHH: OVEREXTENDED
+regime:
+  spy_daily_closes:
+  - '575.16'
+  - '571.68'
+  - '565.87'
+  - '567.63'
+  - '566.52'
+  - '569.84'
+  - '571.52'
+  - '568.56'
+  - '575.21'
+  - '571.26'
+  - '566.20'
+  - '568.52'
+  - '565.77'
+  - '558.90'
+  - '561.12'
+  - '562.59'
+  - '563.67'
+  - '563.48'
+  - '564.35'
+  - '566.65'
+  - '565.80'
+  spy_5m_abs_return_norm: '0.0012'
+  macro_events: []
+members:
+- symbol: AAA
+  note: breakout, highest RVOL -> CANDIDATE
+  security_type: COMMON_STOCK
+  primary_exchange: XNAS
+  sessions_since_listing: 900
+  corporate_action_in_window: false
+  open_volume_history:
+  - 261990
+  - 302981
+  - 269750
+  - 255406
+  - 324682
+  - 260071
+  - 333215
+  - 328575
+  - 331414
+  - 321088
+  - 321256
+  - 316253
+  - 261200
+  - 265388
+  daily_history:
+  - session_date: '2026-10-06'
+    open: '100.68'
+    high: '102.22'
+    low: '99.26'
+    close: '100.81'
+    volume: '2909681'
+  - session_date: '2026-10-07'
+    open: '99.74'
+    high: '101.75'
+    low: '98.26'
+    close: '100.27'
+    volume: '3037145'
+  - session_date: '2026-10-08'
+    open: '100.63'
+    high: '102.10'
+    low: '98.79'
+    close: '100.25'
+    volume: '3233106'
+  - session_date: '2026-10-09'
+    open: '99.48'
+    high: '101.45'
+    low: '97.89'
+    close: '99.86'
+    volume: '2874504'
+  - session_date: '2026-10-10'
+    open: '99.62'
+    high: '101.86'
+    low: '97.92'
+    close: '100.15'
+    volume: '3460594'
+  - session_date: '2026-10-11'
+    open: '100.15'
+    high: '101.55'
+    low: '98.57'
+    close: '99.97'
+    volume: '2606906'
+  - session_date: '2026-10-12'
+    open: '101.22'
+    high: '102.99'
+    low: '99.01'
+    close: '100.79'
+    volume: '3316153'
+  - session_date: '2026-10-13'
+    open: '101.00'
+    high: '102.44'
+    low: '99.51'
+    close: '100.96'
+    volume: '2852445'
+  - session_date: '2026-10-14'
+    open: '100.28'
+    high: '102.11'
+    low: '98.99'
+    close: '100.82'
+    volume: '2869512'
+  - session_date: '2026-10-15'
+    open: '100.64'
+    high: '102.27'
+    low: '98.75'
+    close: '100.37'
+    volume: '3474638'
+  - session_date: '2026-10-16'
+    open: '100.87'
+    high: '102.61'
+    low: '98.87'
+    close: '100.62'
+    volume: '3042276'
+  - session_date: '2026-10-17'
+    open: '99.82'
+    high: '101.55'
+    low: '98.51'
+    close: '100.24'
+    volume: '2966903'
+  - session_date: '2026-10-18'
+    open: '99.51'
+    high: '101.67'
+    low: '97.83'
+    close: '99.99'
+    volume: '3225717'
+  - session_date: '2026-10-19'
+    open: '100.50'
+    high: '102.12'
+    low: '98.43'
+    close: '100.05'
+    volume: '3163788'
+  - session_date: '2026-10-20'
+    open: '100.58'
+    high: '102.11'
+    low: '98.93'
+    close: '100.46'
+    volume: '3030135'
+  premarket:
+    prior_close: '100.46'
+    reference_price: '104.48'
+    premarket_volume: 300000
+- symbol: BBB
+  note: later breakout -> CANDIDATE
+  security_type: COMMON_STOCK
+  primary_exchange: XNAS
+  sessions_since_listing: 900
+  corporate_action_in_window: false
+  open_volume_history:
+  - 506738
+  - 447343
+  - 448846
+  - 497369
+  - 483709
+  - 411151
+  - 422527
+  - 464998
+  - 429797
+  - 510056
+  - 448313
+  - 498689
+  - 481426
+  - 415579
+  daily_history:
+  - session_date: '2026-10-06'
+    open: '44.33'
+    high: '45.07'
+    low: '43.43'
+    close: '44.17'
+    volume: '2544846'
+  - session_date: '2026-10-07'
+    open: '44.32'
+    high: '45.01'
+    low: '43.55'
+    close: '44.24'
+    volume: '2678128'
+  - session_date: '2026-10-08'
+    open: '44.41'
+    high: '45.20'
+    low: '43.58'
+    close: '44.37'
+    volume: '2979317'
+  - session_date: '2026-10-09'
+    open: '44.35'
+    high: '45.34'
+    low: '43.56'
+    close: '44.54'
+    volume: '2590368'
+  - session_date: '2026-10-10'
+    open: '44.06'
+    high: '44.68'
+    low: '43.49'
+    close: '44.11'
+    volume: '2927741'
+  - session_date: '2026-10-11'
+    open: '44.26'
+    high: '44.88'
+    low: '43.60'
+    close: '44.22'
+    volume: '3256255'
+  - session_date: '2026-10-12'
+    open: '44.35'
+    high: '45.12'
+    low: '43.17'
+    close: '43.94'
+    volume: '2762390'
+  - session_date: '2026-10-13'
+    open: '44.15'
+    high: '44.74'
+    low: '43.58'
+    close: '44.17'
+    volume: '2710543'
+  - session_date: '2026-10-14'
+    open: '44.12'
+    high: '44.86'
+    low: '43.55'
+    close: '44.30'
+    volume: '3233779'
+  - session_date: '2026-10-15'
+    open: '44.51'
+    high: '45.13'
+    low: '43.89'
+    close: '44.51'
+    volume: '3574176'
+  - session_date: '2026-10-16'
+    open: '44.43'
+    high: '44.99'
+    low: '43.86'
+    close: '44.42'
+    volume: '2844944'
+  - session_date: '2026-10-17'
+    open: '43.96'
+    high: '44.70'
+    low: '43.33'
+    close: '44.06'
+    volume: '3355393'
+  - session_date: '2026-10-18'
+    open: '44.24'
+    high: '44.93'
+    low: '43.60'
+    close: '44.28'
+    volume: '2601042'
+  - session_date: '2026-10-19'
+    open: '44.39'
+    high: '45.20'
+    low: '43.57'
+    close: '44.37'
+    volume: '3581981'
+  - session_date: '2026-10-20'
+    open: '44.64'
+    high: '45.22'
+    low: '43.95'
+    close: '44.53'
+    volume: '2929798'
+  premarket:
+    prior_close: '44.53'
+    reference_price: '45.87'
+    premarket_volume: 400000
+- symbol: CCC
+  note: stock in play but no breakout
+  security_type: COMMON_STOCK
+  primary_exchange: XNAS
+  sessions_since_listing: 900
+  corporate_action_in_window: false
+  open_volume_history:
+  - 487830
+  - 485448
+  - 559765
+  - 469727
+  - 467907
+  - 462906
+  - 458733
+  - 486481
+  - 489902
+  - 480749
+  - 430984
+  - 570087
+  - 556008
+  - 506870
+  daily_history:
+  - session_date: '2026-10-06'
+    open: '248.79'
+    high: '252.44'
+    low: '243.78'
+    close: '247.43'
+    volume: '2671095'
+  - session_date: '2026-10-07'
+    open: '244.57'
+    high: '250.63'
+    low: '241.39'
+    close: '247.45'
+    volume: '2489580'
+  - session_date: '2026-10-08'
+    open: '246.90'
+    high: '250.22'
+    low: '243.60'
+    close: '246.92'
+    volume: '3316441'
+  - session_date: '2026-10-09'
+    open: '245.57'
+    high: '250.48'
+    low: '242.52'
+    close: '247.43'
+    volume: '2559981'
+  - session_date: '2026-10-10'
+    open: '246.08'
+    high: '250.69'
+    low: '242.24'
+    close: '246.85'
+    volume: '3512645'
+  - session_date: '2026-10-11'
+    open: '247.42'
+    high: '251.41'
+    low: '242.64'
+    close: '246.64'
+    volume: '2446722'
+  - session_date: '2026-10-12'
+    open: '248.88'
+    high: '253.01'
+    low: '243.51'
+    close: '247.64'
+    volume: '2760124'
+  - session_date: '2026-10-13'
+    open: '250.68'
+    high: '254.66'
+    low: '245.90'
+    close: '249.87'
+    volume: '3512001'
+  - session_date: '2026-10-14'
+    open: '251.50'
+    high: '254.63'
+    low: '247.02'
+    close: '250.16'
+    volume: '2611220'
+  - session_date: '2026-10-15'
+    open: '247.29'
+    high: '252.34'
+    low: '242.80'
+    close: '247.84'
+    volume: '2709613'
+  - session_date: '2026-10-16'
+    open: '248.12'
+    high: '251.92'
+    low: '244.21'
+    close: '248.00'
+    volume: '2693895'
+  - session_date: '2026-10-17'
+    open: '250.75'
+    high: '255.16'
+    low: '244.96'
+    close: '249.37'
+    volume: '2433895'
+  - session_date: '2026-10-18'
+    open: '248.89'
+    high: '252.10'
+    low: '244.44'
+    close: '247.65'
+    volume: '2795553'
+  - session_date: '2026-10-19'
+    open: '247.33'
+    high: '252.91'
+    low: '243.41'
+    close: '248.99'
+    volume: '3408318'
+  - session_date: '2026-10-20'
+    open: '246.61'
+    high: '253.40'
+    low: '242.33'
+    close: '249.12'
+    volume: '3586593'
+  premarket:
+    prior_close: '249.12'
+    reference_price: '254.10'
+    premarket_volume: 120000
+- symbol: DDD
+  note: on watchlist, fails stage-2 RVOL
+  security_type: COMMON_STOCK
+  primary_exchange: XNAS
+  sessions_since_listing: 900
+  corporate_action_in_window: false
+  open_volume_history:
+  - 1597245
+  - 1629272
+  - 1757594
+  - 1556685
+  - 1659693
+  - 1705690
+  - 1517942
+  - 1642670
+  - 1493627
+  - 1318281
+  - 1755976
+  - 1733105
+  - 1311664
+  - 1625864
+  daily_history:
+  - session_date: '2026-10-06'
+    open: '29.37'
+    high: '29.79'
+    low: '28.99'
+    close: '29.41'
+    volume: '2982397'
+  - session_date: '2026-10-07'
+    open: '29.25'
+    high: '29.62'
+    low: '28.79'
+    close: '29.16'
+    volume: '2810470'
+  - session_date: '2026-10-08'
+    open: '29.06'
+    high: '29.76'
+    low: '28.56'
+    close: '29.26'
+    volume: '3104776'
+  - session_date: '2026-10-09'
+    open: '29.28'
+    high: '29.71'
+    low: '28.72'
+    close: '29.15'
+    volume: '2568085'
+  - session_date: '2026-10-10'
+    open: '28.69'
+    high: '29.32'
+    low: '28.15'
+    close: '28.78'
+    volume: '2414270'
+  - session_date: '2026-10-11'
+    open: '28.85'
+    high: '29.22'
+    low: '28.37'
+    close: '28.74'
+    volume: '2526864'
+  - session_date: '2026-10-12'
+    open: '28.89'
+    high: '29.26'
+    low: '28.46'
+    close: '28.83'
+    volume: '2520653'
+  - session_date: '2026-10-13'
+    open: '28.84'
+    high: '29.25'
+    low: '28.42'
+    close: '28.83'
+    volume: '3465111'
+  - session_date: '2026-10-14'
+    open: '29.06'
+    high: '29.53'
+    low: '28.47'
+    close: '28.95'
+    volume: '3086685'
+  - session_date: '2026-10-15'
+    open: '29.43'
+    high: '29.94'
+    low: '28.76'
+    close: '29.27'
+    volume: '3143330'
+  - session_date: '2026-10-16'
+    open: '29.20'
+    high: '29.75'
+    low: '28.80'
+    close: '29.35'
+    volume: '3302707'
+  - session_date: '2026-10-17'
+    open: '29.37'
+    high: '30.03'
+    low: '28.90'
+    close: '29.56'
+    volume: '3092340'
+  - session_date: '2026-10-18'
+    open: '29.53'
+    high: '30.14'
+    low: '29.10'
+    close: '29.71'
+    volume: '2889763'
+  - session_date: '2026-10-19'
+    open: '29.71'
+    high: '30.19'
+    low: '29.19'
+    close: '29.67'
+    volume: '3378131'
+  - session_date: '2026-10-20'
+    open: '29.48'
+    high: '29.90'
+    low: '29.08'
+    close: '29.50'
+    volume: '2684462'
+  premarket:
+    prior_close: '29.50'
+    reference_price: '30.98'
+    premarket_volume: 500000
+- symbol: EEE
+  note: ETF -> excluded
+  security_type: ETF
+  primary_exchange: XNAS
+  sessions_since_listing: 900
+  corporate_action_in_window: false
+  open_volume_history:
+  - 353669
+  - 374234
+  - 361456
+  - 331679
+  - 372837
+  - 347410
+  - 386451
+  - 353066
+  - 386656
+  - 399136
+  - 314521
+  - 345756
+  - 368676
+  - 313986
+  daily_history:
+  - session_date: '2026-10-06'
+    open: '445.52'
+    high: '451.05'
+    low: '437.91'
+    close: '443.44'
+    volume: '2930414'
+  - session_date: '2026-10-07'
+    open: '436.75'
+    high: '444.71'
+    low: '430.68'
+    close: '438.64'
+    volume: '2961543'
+  - session_date: '2026-10-08'
+    open: '444.70'
+    high: '451.69'
+    low: '437.29'
+    close: '444.29'
+    volume: '3548149'
+  - session_date: '2026-10-09'
+    open: '451.64'
+    high: '457.37'
+    low: '444.98'
+    close: '450.72'
+    volume: '2877942'
+  - session_date: '2026-10-10'
+    open: '451.64'
+    high: '458.09'
+    low: '446.15'
+    close: '452.60'
+    volume: '3137128'
+  - session_date: '2026-10-11'
+    open: '453.58'
+    high: '462.84'
+    low: '447.25'
+    close: '456.51'
+    volume: '3494474'
+  - session_date: '2026-10-12'
+    open: '457.50'
+    high: '463.75'
+    low: '449.93'
+    close: '456.18'
+    volume: '2924635'
+  - session_date: '2026-10-13'
+    open: '456.55'
+    high: '463.70'
+    low: '448.25'
+    close: '455.39'
+    volume: '2845588'
+  - session_date: '2026-10-14'
+    open: '453.58'
+    high: '463.60'
+    low: '445.54'
+    close: '455.56'
+    volume: '2414857'
+  - session_date: '2026-10-15'
+    open: '457.30'
+    high: '463.81'
+    low: '449.76'
+    close: '456.28'
+    volume: '2676668'
+  - session_date: '2026-10-16'
+    open: '458.60'
+    high: '465.70'
+    low: '450.15'
+    close: '457.25'
+    volume: '3348903'
+  - session_date: '2026-10-17'
+    open: '454.55'
+    high: '462.75'
+    low: '447.43'
+    close: '455.63'
+    volume: '3404129'
+  - session_date: '2026-10-18'
+    open: '452.24'
+    high: '460.11'
+    low: '446.32'
+    close: '454.19'
+    volume: '3332055'
+  - session_date: '2026-10-19'
+    open: '452.35'
+    high: '460.53'
+    low: '445.85'
+    close: '454.03'
+    volume: '3167957'
+  - session_date: '2026-10-20'
+    open: '458.38'
+    high: '464.83'
+    low: '448.81'
+    close: '455.27'
+    volume: '3535943'
+  premarket:
+    prior_close: '455.27'
+    reference_price: '459.82'
+    premarket_volume: 900000
+- symbol: FFF
+  note: $3 stock -> excluded
+  security_type: COMMON_STOCK
+  primary_exchange: XNAS
+  sessions_since_listing: 900
+  corporate_action_in_window: false
+  open_volume_history:
+  - 351621
+  - 363651
+  - 416501
+  - 349715
+  - 353721
+  - 429972
+  - 362395
+  - 401812
+  - 396119
+  - 424105
+  - 373346
+  - 427881
+  - 355768
+  - 351501
+  daily_history:
+  - session_date: '2026-10-06'
+    open: '2.95'
+    high: '3.01'
+    low: '2.91'
+    close: '2.96'
+    volume: '2463165'
+  - session_date: '2026-10-07'
+    open: '2.94'
+    high: '2.99'
+    low: '2.89'
+    close: '2.94'
+    volume: '3137709'
+  - session_date: '2026-10-08'
+    open: '2.92'
+    high: '2.98'
+    low: '2.86'
+    close: '2.91'
+    volume: '3491731'
+  - session_date: '2026-10-09'
+    open: '2.93'
+    high: '2.97'
+    low: '2.89'
+    close: '2.93'
+    volume: '3526371'
+  - session_date: '2026-10-10'
+    open: '2.89'
+    high: '2.95'
+    low: '2.84'
+    close: '2.90'
+    volume: '2583119'
+  - session_date: '2026-10-11'
+    open: '2.88'
+    high: '2.94'
+    low: '2.83'
+    close: '2.88'
+    volume: '2403604'
+  - session_date: '2026-10-12'
+    open: '2.85'
+    high: '2.91'
+    low: '2.80'
+    close: '2.86'
+    volume: '2479952'
+  - session_date: '2026-10-13'
+    open: '2.83'
+    high: '2.87'
+    low: '2.79'
+    close: '2.83'
+    volume: '2907266'
+  - session_date: '2026-10-14'
+    open: '2.87'
+    high: '2.92'
+    low: '2.80'
+    close: '2.85'
+    volume: '3425399'
+  - session_date: '2026-10-15'
+    open: '2.83'
+    high: '2.88'
+    low: '2.78'
+    close: '2.83'
+    volume: '2536754'
+  - session_date: '2026-10-16'
+    open: '2.84'
+    high: '2.88'
+    low: '2.79'
+    close: '2.83'
+    volume: '3288608'
+  - session_date: '2026-10-17'
+    open: '2.83'
+    high: '2.89'
+    low: '2.78'
+    close: '2.84'
+    volume: '2757694'
+  - session_date: '2026-10-18'
+    open: '2.85'
+    high: '2.88'
+    low: '2.78'
+    close: '2.82'
+    volume: '3524998'
+  - session_date: '2026-10-19'
+    open: '2.84'
+    high: '2.89'
+    low: '2.78'
+    close: '2.82'
+    volume: '2721395'
+  - session_date: '2026-10-20'
+    open: '2.80'
+    high: '2.86'
+    low: '2.75'
+    close: '2.81'
+    volume: '3023930'
+  premarket:
+    prior_close: '2.81'
+    reference_price: '3.03'
+    premarket_volume: 2000000
+- symbol: GGG
+  note: 6-session-old IPO -> excluded
+  security_type: COMMON_STOCK
+  primary_exchange: XNAS
+  sessions_since_listing: 6
+  corporate_action_in_window: false
+  open_volume_history:
+  - 351814
+  - 381657
+  - 358488
+  - 327020
+  - 372810
+  - 351202
+  - 375019
+  - 351834
+  - 319442
+  - 327059
+  - 329120
+  - 333345
+  - 381924
+  - 320406
+  daily_history:
+  - session_date: '2026-10-06'
+    open: '79.69'
+    high: '81.20'
+    low: '78.59'
+    close: '80.10'
+    volume: '2978888'
+  - session_date: '2026-10-07'
+    open: '79.72'
+    high: '80.99'
+    low: '78.66'
+    close: '79.92'
+    volume: '2626886'
+  - session_date: '2026-10-08'
+    open: '79.02'
+    high: '80.48'
+    low: '77.76'
+    close: '79.21'
+    volume: '3069154'
+  - session_date: '2026-10-09'
+    open: '78.86'
+    high: '80.29'
+    low: '77.60'
+    close: '79.03'
+    volume: '2617606'
+  - session_date: '2026-10-10'
+    open: '79.37'
+    high: '80.74'
+    low: '77.67'
+    close: '79.04'
+    volume: '2551555'
+  - session_date: '2026-10-11'
+    open: '78.95'
+    high: '80.35'
+    low: '77.86'
+    close: '79.26'
+    volume: '2734394'
+  premarket:
+    prior_close: '79.26'
+    reference_price: '84.02'
+    premarket_volume: 300000
+- symbol: HHH
+  note: spike -> REJECT OVEREXTENDED
+  security_type: COMMON_STOCK
+  primary_exchange: XNAS
+  sessions_since_listing: 900
+  corporate_action_in_window: false
+  open_volume_history:
+  - 713148
+  - 724265
+  - 740535
+  - 709998
+  - 650206
+  - 690728
+  - 714328
+  - 604257
+  - 723129
+  - 707628
+  - 709213
+  - 557641
+  - 592276
+  - 570272
+  daily_history:
+  - session_date: '2026-10-06'
+    open: '59.32'
+    high: '60.67'
+    low: '58.41'
+    close: '59.75'
+    volume: '2729158'
+  - session_date: '2026-10-07'
+    open: '60.00'
+    high: '60.82'
+    low: '59.05'
+    close: '59.86'
+    volume: '2905924'
+  - session_date: '2026-10-08'
+    open: '59.73'
+    high: '60.50'
+    low: '58.90'
+    close: '59.66'
+    volume: '2412481'
+  - session_date: '2026-10-09'
+    open: '59.81'
+    high: '60.69'
+    low: '59.08'
+    close: '59.95'
+    volume: '3182514'
+  - session_date: '2026-10-10'
+    open: '59.85'
+    high: '60.71'
+    low: '58.94'
+    close: '59.79'
+    volume: '3058284'
+  - session_date: '2026-10-11'
+    open: '59.34'
+    high: '60.43'
+    low: '58.49'
+    close: '59.58'
+    volume: '3367256'
+  - session_date: '2026-10-12'
+    open: '59.29'
+    high: '60.42'
+    low: '58.23'
+    close: '59.36'
+    volume: '2762466'
+  - session_date: '2026-10-13'
+    open: '59.16'
+    high: '60.16'
+    low: '58.31'
+    close: '59.32'
+    volume: '3491423'
+  - session_date: '2026-10-14'
+    open: '59.38'
+    high: '60.57'
+    low: '58.52'
+    close: '59.71'
+    volume: '3042708'
+  - session_date: '2026-10-15'
+    open: '59.36'
+    high: '60.40'
+    low: '58.33'
+    close: '59.37'
+    volume: '2906747'
+  - session_date: '2026-10-16'
+    open: '59.14'
+    high: '59.98'
+    low: '58.42'
+    close: '59.25'
+    volume: '2914328'
+  - session_date: '2026-10-17'
+    open: '58.85'
+    high: '59.85'
+    low: '57.87'
+    close: '58.87'
+    volume: '3101197'
+  - session_date: '2026-10-18'
+    open: '58.64'
+    high: '59.57'
+    low: '57.68'
+    close: '58.61'
+    volume: '3047680'
+  - session_date: '2026-10-19'
+    open: '58.05'
+    high: '59.09'
+    low: '57.32'
+    close: '58.36'
+    volume: '3351179'
+  - session_date: '2026-10-20'
+    open: '58.81'
+    high: '59.62'
+    low: '57.79'
+    close: '58.60'
+    volume: '2710712'
+  premarket:
+    prior_close: '58.60'
+    reference_price: '60.65'
+    premarket_volume: 250000
+- symbol: JJJ
+  note: no pre-market stats
+  security_type: COMMON_STOCK
+  primary_exchange: XNAS
+  sessions_since_listing: 900
+  corporate_action_in_window: false
+  open_volume_history:
+  - 462546
+  - 396146
+  - 531111
+  - 507022
+  - 531308
+  - 513562
+  - 512314
+  - 481202
+  - 529224
+  - 513704
+  - 508673
+  - 420068
+  - 469738
+  - 427015
+  daily_history:
+  - session_date: '2026-10-06'
+    open: '68.96'
+    high: '70.39'
+    low: '67.76'
+    close: '69.19'
+    volume: '2637313'
+  - session_date: '2026-10-07'
+    open: '69.48'
+    high: '70.65'
+    low: '68.01'
+    close: '69.18'
+    volume: '2982561'
+  - session_date: '2026-10-08'
+    open: '68.73'
+    high: '70.05'
+    low: '67.49'
+    close: '68.82'
+    volume: '2983004'
+  - session_date: '2026-10-09'
+    open: '68.22'
+    high: '69.42'
+    low: '67.06'
+    close: '68.27'
+    volume: '3577198'
+  - session_date: '2026-10-10'
+    open: '68.08'
+    high: '69.22'
+    low: '67.11'
+    close: '68.24'
+    volume: '2542607'
+  - session_date: '2026-10-11'
+    open: '67.92'
+    high: '68.92'
+    low: '66.80'
+    close: '67.81'
+    volume: '2944509'
+  - session_date: '2026-10-12'
+    open: '68.00'
+    high: '69.09'
+    low: '66.93'
+    close: '68.03'
+    volume: '2414489'
+  - session_date: '2026-10-13'
+    open: '68.76'
+    high: '69.77'
+    low: '67.59'
+    close: '68.60'
+    volume: '3288070'
+  - session_date: '2026-10-14'
+    open: '67.85'
+    high: '69.36'
+    low: '66.64'
+    close: '68.16'
+    volume: '3500102'
+  - session_date: '2026-10-15'
+    open: '68.33'
+    high: '69.61'
+    low: '67.26'
+    close: '68.55'
+    volume: '2559177'
+  - session_date: '2026-10-16'
+    open: '69.12'
+    high: '70.16'
+    low: '67.81'
+    close: '68.86'
+    volume: '2977375'
+  - session_date: '2026-10-17'
+    open: '69.04'
+    high: '70.25'
+    low: '67.40'
+    close: '68.61'
+    volume: '3569270'
+  - session_date: '2026-10-18'
+    open: '68.16'
+    high: '69.45'
+    low: '67.07'
+    close: '68.35'
+    volume: '2895606'
+  - session_date: '2026-10-19'
+    open: '68.14'
+    high: '69.10'
+    low: '67.06'
+    close: '68.02'
+    volume: '2643111'
+  - session_date: '2026-10-20'
+    open: '67.70'
+    high: '68.75'
+    low: '66.48'
+    close: '67.52'
+    volume: '2802483'

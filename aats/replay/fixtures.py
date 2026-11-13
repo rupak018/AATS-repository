@@ -21,6 +21,7 @@ import yaml
 
 from aats.domain.market import DailyBar, MarketBar
 from aats.domain.regime import MacroEvent
+from aats.replay.tracker import BenchmarkFeed
 
 
 @dataclass(frozen=True)
@@ -38,6 +39,16 @@ class SessionFixture:
     spy_daily_closes: tuple[Decimal, ...] = ()
     spy_5m_abs_return_norm: Decimal | None = None
     macro_events: tuple[MacroEvent, ...] = ()
+
+    @property
+    def benchmark(self) -> BenchmarkFeed:
+        return BenchmarkFeed(
+            bars=self.benchmark_bars,
+            breadth=self.breadth,
+            spy_daily_closes=self.spy_daily_closes,
+            spy_5m_abs_return_norm=self.spy_5m_abs_return_norm,
+            macro_events=self.macro_events,
+        )
 
 
 def _bar(symbol: str, row: dict[str, str]) -> MarketBar:

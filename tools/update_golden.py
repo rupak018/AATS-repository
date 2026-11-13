@@ -18,10 +18,15 @@ sys.path.insert(0, str(ROOT))
 
 from aats.regime import load_regime_params  # noqa: E402
 from aats.replay import discover_fixtures, load_fixture, run_replay  # noqa: E402
+from aats.replay.session import run_session_replay  # noqa: E402
+from aats.replay.universe import discover_universe_fixtures, load_universe_fixture  # noqa: E402
+from aats.selection import load_selection_params  # noqa: E402
 from aats.strategies.orb_vwap import load_params  # noqa: E402
 
 PARAMS = ROOT / "configs" / "strategy" / "orb_vwap_long_a_0.2.0-research.yaml"
 REGIME = ROOT / "configs" / "regime" / "regime-1.0.0.yaml"
+SELECTION = ROOT / "configs" / "selection" / "selection-1.0.0.yaml"
+EXPECTED_UNIVERSE = ROOT / "tests" / "golden" / "expected_universe"
 EXPECTED = ROOT / "tests" / "golden" / "expected"
 
 
@@ -38,6 +43,14 @@ def main() -> int:
     for d in discover_fixtures(ROOT / "fixtures" / "sessions"):
         summary = run_replay(load_fixture(d), params, regime).summary()
         (EXPECTED / f"{d.name}.json").write_text(
+            json.dumps(summary, indent=2, sort_keys=True) + "\n", "utf-8"
+        )
+        print("updated", d.name, summary["event_log_head_hash"][:12])
+    EXPECTED_UNIVERSE.mkdir(parents=True, exist_ok=True)
+    selection = load_selection_params(SELECTION)
+    for d in discover_universe_fixtures(ROOT / "fixtures" / "universe"):
+        summary = run_session_replay(load_universe_fixture(d), params, regime, selection).summary()
+        (EXPECTED_UNIVERSE / f"{d.name}.json").write_text(
             json.dumps(summary, indent=2, sort_keys=True) + "\n", "utf-8"
         )
         print("updated", d.name, summary["event_log_head_hash"][:12])
