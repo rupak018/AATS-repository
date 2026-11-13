@@ -1,0 +1,249 @@
+{
+  "candidates": [
+    {
+      "as_of_utc": "2026-10-28T14:06:00+00:00",
+      "entry_reference": "101.31",
+      "regime": "BULL_TREND",
+      "stop_reference": "100.21",
+      "symbol": "AAA"
+    },
+    {
+      "as_of_utc": "2026-10-28T14:06:00+00:00",
+      "entry_reference": "45.52",
+      "regime": "BULL_TREND",
+      "stop_reference": "45.13",
+      "symbol": "BBB"
+    }
+  ],
+  "event_count": 5782,
+  "event_log_head_hash": "e5fdbe2514f265ab6d0d04f69d617e5f7b58af43ede037ff012151c495962bb2",
+  "fixture": "2026-10-28_universe_bull",
+  "not_subscribed_bars": 1560,
+  "regime_counts": {
+    "BULL_TREND": 376
+  },
+  "session": {
+    "close_utc": "2026-10-28T20:00:00+00:00",
+    "early_close": false,
+    "open_utc": "2026-10-28T13:30:00+00:00"
+  },
+  "stocks_in_play": {
+    "failed_rvol": {
+      "DDD": "0.575935"
+    },
+    "selected": [
+      {
+        "rank": 1,
+        "rvol_open": "3.007526",
+        "symbol": "AAA"
+      },
+      {
+        "rank": 2,
+        "rvol_open": "1.922544",
+        "symbol": "BBB"
+      },
+      {
+        "rank": 3,
+        "rvol_open": "1.813988",
+        "symbol": "CCC"
+      },
+      {
+        "rank": 4,
+        "rvol_open": "1.359145",
+        "symbol": "HHH"
+      }
+    ],
+    "truncated": []
+  },
+  "symbols": {
+    "AAA": {
+      "decision_runs": [
+        {
+          "count": 21,
+          "from": "2026-10-28T13:45:00+00:00",
+          "outcome": "WAIT",
+          "reasons": [
+            "NO_BREAKOUT"
+          ],
+          "regime": "BULL_TREND",
+          "to": "2026-10-28T14:05:00+00:00"
+        },
+        {
+          "count": 1,
+          "entry_reference": "101.31",
+          "expires_at_utc": "2026-10-28T14:09:00+00:00",
+          "from": "2026-10-28T14:06:00+00:00",
+          "outcome": "CANDIDATE",
+          "reasons": [
+            "ORB_BREAKOUT_CONFIRMED",
+            "ABOVE_SESSION_VWAP"
+          ],
+          "regime": "BULL_TREND",
+          "stop_reference": "100.21",
+          "to": "2026-10-28T14:06:00+00:00"
+        },
+        {
+          "count": 354,
+          "from": "2026-10-28T14:07:00+00:00",
+          "outcome": "NO_TRADE",
+          "reasons": [
+            "ALREADY_TRADED_TODAY"
+          ],
+          "regime": "BULL_TREND",
+          "to": "2026-10-28T20:00:00+00:00"
+        }
+      ],
+      "outcome_counts": {
+        "CANDIDATE": 1,
+        "NO_TRADE": 354,
+        "WAIT": 21
+      }
+    },
+    "BBB": {
+      "decision_runs": [
+        {
+          "count": 21,
+          "from": "2026-10-28T13:45:00+00:00",
+          "outcome": "WAIT",
+          "reasons": [
+            "NO_BREAKOUT"
+          ],
+          "regime": "BULL_TREND",
+          "to": "2026-10-28T14:05:00+00:00"
+        },
+        {
+          "count": 1,
+          "entry_reference": "45.52",
+          "expires_at_utc": "2026-10-28T14:09:00+00:00",
+          "from": "2026-10-28T14:06:00+00:00",
+          "outcome": "CANDIDATE",
+          "reasons": [
+            "ORB_BREAKOUT_CONFIRMED",
+            "ABOVE_SESSION_VWAP"
+          ],
+          "regime": "BULL_TREND",
+          "stop_reference": "45.13",
+          "to": "2026-10-28T14:06:00+00:00"
+        },
+        {
+          "count": 354,
+          "from": "2026-10-28T14:07:00+00:00",
+          "outcome": "NO_TRADE",
+          "reasons": [
+            "ALREADY_TRADED_TODAY"
+          ],
+          "regime": "BULL_TREND",
+          "to": "2026-10-28T20:00:00+00:00"
+        }
+      ],
+      "outcome_counts": {
+        "CANDIDATE": 1,
+        "NO_TRADE": 354,
+        "WAIT": 21
+      }
+    },
+    "CCC": {
+      "decision_runs": [
+        {
+          "count": 106,
+          "from": "2026-10-28T13:45:00+00:00",
+          "outcome": "WAIT",
+          "reasons": [
+            "NO_BREAKOUT"
+          ],
+          "regime": "BULL_TREND",
+          "to": "2026-10-28T15:30:00+00:00"
+        },
+        {
+          "count": 270,
+          "from": "2026-10-28T15:31:00+00:00",
+          "outcome": "NO_TRADE",
+          "reasons": [
+            "OUTSIDE_ENTRY_WINDOW"
+          ],
+          "regime": "BULL_TREND",
+          "to": "2026-10-28T20:00:00+00:00"
+        }
+      ],
+      "outcome_counts": {
+        "NO_TRADE": 270,
+        "WAIT": 106
+      }
+    },
+    "HHH": {
+      "decision_runs": [
+        {
+          "count": 2,
+          "from": "2026-10-28T13:45:00+00:00",
+          "outcome": "WAIT",
+          "reasons": [
+            "NO_BREAKOUT"
+          ],
+          "regime": "BULL_TREND",
+          "to": "2026-10-28T13:46:00+00:00"
+        },
+        {
+          "count": 104,
+          "from": "2026-10-28T13:47:00+00:00",
+          "outcome": "REJECT",
+          "reasons": [
+            "OVEREXTENDED"
+          ],
+          "regime": "BULL_TREND",
+          "to": "2026-10-28T15:30:00+00:00"
+        },
+        {
+          "count": 270,
+          "from": "2026-10-28T15:31:00+00:00",
+          "outcome": "NO_TRADE",
+          "reasons": [
+            "OUTSIDE_ENTRY_WINDOW"
+          ],
+          "regime": "BULL_TREND",
+          "to": "2026-10-28T20:00:00+00:00"
+        }
+      ],
+      "outcome_counts": {
+        "NO_TRADE": 270,
+        "REJECT": 104,
+        "WAIT": 2
+      }
+    }
+  },
+  "versions": {
+    "feature_version": "features-1.0.0",
+    "params_hash": "459dc906998f8593ea484eba8746264ad6df26bdd8eb1ee4bc5ce6cdf5315982",
+    "regime_params_hash": "a5567f02542d51b71bdc66ef02168629d32e1972eb4a61682cc4b022b619bd51",
+    "regime_rule_version": "regime-1.0.0",
+    "selection_params_hash": "ce99b6b448ca9a863625863b8aa8e81c0197373737d3646f5ec835e3e3aa16d3",
+    "selection_policy_version": "selection-1.0.0"
+  },
+  "watchlist": {
+    "rejected": {
+      "EEE": [
+        "SECURITY_TYPE"
+      ],
+      "FFF": [
+        "ATR",
+        "AVG_DOLLAR_VOLUME",
+        "PRICE"
+      ],
+      "GGG": [
+        "ATR",
+        "HISTORY",
+        "IPO_WINDOW"
+      ],
+      "JJJ": [
+        "PREMARKET_STATS"
+      ]
+    },
+    "selected": [
+      "DDD",
+      "AAA",
+      "HHH",
+      "BBB",
+      "CCC"
+    ],
+    "truncated": []
+  }
+}

@@ -1,4 +1,4 @@
-.PHONY: install lint fmt type test golden property check golden-update fixtures replay
+.PHONY: install lint fmt type test golden property check golden-update fixtures replay replay-session
 
 PY ?= python
 
@@ -33,7 +33,14 @@ golden-update:    ## ONLY after an intended behaviour change; then review the di
 
 fixtures:         ## regenerate synthetic fixtures (deterministic; normally never needed)
 	$(PY) tools/make_fixtures.py
+	$(PY) tools/make_universe_fixtures.py
 
 replay:           ## example: make replay FIXTURE=2026-10-14_clean_breakout
 	aats-replay fixtures/sessions/$(FIXTURE) --params configs/strategy/orb_vwap_long_a_0.2.0-research.yaml \
 		--regime-params configs/regime/regime-1.0.0.yaml
+
+replay-session:   ## example: make replay-session FIXTURE=2026-10-28_universe_bull
+	aats-replay-session fixtures/universe/$(FIXTURE) \
+		--params configs/strategy/orb_vwap_long_a_0.2.0-research.yaml \
+		--regime-params configs/regime/regime-1.0.0.yaml \
+		--selection-params configs/selection/selection-1.0.0.yaml

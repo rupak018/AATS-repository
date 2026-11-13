@@ -19,7 +19,9 @@ Read `README.md` first. Design source of truth: AATS Design v1.2 (section number
   and explain the diff in the PR.
 - New behaviour = new unit test + (if it changes decisions) new or updated fixture and golden file.
 - New reason codes: append to `ReasonCode`; never rename or reuse a value.
+- Single- and multi-symbol replay share `replay/tracker.py`; a selected symbol must decide identically in
+  both (`test_parity_with_single_symbol_replay`).
 
 ## Next backlog items
-AATS-006b multi-symbol session replay driven by selection · AATS-008 Risk Gate + allocation queue ·
+AATS-008 Risk Gate + allocation queue (consume SessionReplayResult candidates) ·
 AATS-009 simulated OMS with bracket orders · AATS-010 cost/fill model · AATS-012 LLM shadow pipeline.

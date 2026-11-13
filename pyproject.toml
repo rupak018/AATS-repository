@@ -27,6 +27,7 @@ calendar = ["exchange_calendars>=4.5"]
 
 [project.scripts]
 aats-replay = "aats.replay.cli:main"
+aats-replay-session = "aats.replay.cli:session_main"
 
 [tool.setuptools.packages.find]
 include = ["aats*"]

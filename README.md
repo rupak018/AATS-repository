@@ -5,7 +5,7 @@ strategy on US equities. **Paper and replay only — there is no live-trading mo
 *AATS Design v1.2*.
 
 Built so far: milestones M1–M2 (backlog AATS-001…005), the variant A rule set (AATS-007) and
-stocks-in-play selection plus regime rules (AATS-006):
+stocks-in-play selection plus regime rules (AATS-006) and multi-symbol session replay (AATS-006b):
 
 | Area | Where | Status |
 |---|---|---|
@@ -18,11 +18,12 @@ stocks-in-play selection plus regime rules (AATS-006):
 | Stocks-in-play selection | `aats/selection/`, `configs/selection/` | stage 1 pre-market watchlist (type, exchange, IPO, corporate action, price, volume, $ volume, ATR) and stage 2 RVOL top-N, with every gate result and truncation recorded |
 | Strategy variant A | `aats/strategies/orb_vwap/` | close-confirmation rules incl. regime eligibility gate, every branch has a reason code |
 | Replay harness | `aats/replay/` | replay clock, hash-chained event log, deterministic IDs, CLI |
+| Session replay | `aats/replay/session.py`, `fixtures/universe/` | whole-session, multi-symbol replay: pre-market watchlist → only watchlist symbols subscribed → stocks in play chosen at opening-range completion → strategy decisions per selected symbol, regime shared per minute |
 | Golden fixtures | `fixtures/sessions/`, `tests/golden/expected/` | 11 synthetic sessions incl. DST, early close, data faults, missing and stale benchmark feed; each with SPY benchmark + breadth for regime inputs |
 | Planned packages | `risk/ execution/ llm/ orchestration/ backtest/ persistence/ monitoring/` | placeholders with boundaries already enforced by tests |
 
-Selection is a tested, standalone module; replay is still single-symbol, so wiring selection into a
-multi-symbol session replay is the next step (AATS-006b).
+Candidates from different symbols can fire in the same minute (the universe fixture shows two at
+14:06 UTC); choosing between them is the Risk Gate's allocation queue, the next step (AATS-008).
 
 ## Quick start
 
@@ -30,7 +31,8 @@ multi-symbol session replay is the next step (AATS-006b).
 python -m venv .venv && source .venv/bin/activate      # Python 3.12+
 make install
 make check                                              # lint + types + tests + golden
-make replay FIXTURE=2026-10-14_clean_breakout           # print a replay summary (with regime)
+make replay FIXTURE=2026-10-14_clean_breakout           # single-symbol replay summary
+make replay-session FIXTURE=2026-10-28_universe_bull    # multi-symbol session replay summary
 ```
 
 ## How the tests are organised
@@ -40,7 +42,7 @@ make replay FIXTURE=2026-10-14_clean_breakout           # print a replay summary
 | `tests/unit` | Contracts reject bad data; hand-computed feature values; calendar DST/early-close; quality checks; strategy decision table; event-log tamper detection | every push |
 | `tests/property` | Invariants on seeded random inputs (VWAP inside price range, ORB bounds, RVOL scale invariance, any dropped bar detected, replay invariants) | every push (60 cases), nightly (1000) |
 | `tests/architecture` | Authority boundaries: LLM code can't import execution/risk/config; no wall clock, randomness or `float()` in business logic; no live mode | every push |
-| `tests/golden` | Replaying each fixture reproduces the approved summary and event-log hash, twice, identically | every push |
+| `tests/golden` | Replaying each single-symbol and universe fixture reproduces the approved summary and event-log hash, twice, identically | every push |
 | `tests/integration` | Committed NYSE calendar equals `exchange_calendars` for 2025–2027 | every push (skipped if not installed) |
 
 ### When a golden test fails
