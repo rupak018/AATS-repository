@@ -10,35 +10,28 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from aats.calendar import SessionCalendar, default_calendar
-from aats.data.quality import check_intraday_bars
 from aats.domain.base import canonical_dumps, sha256_hex
 from aats.domain.decisions import FeatureSnapshot, TradeProposal
 from aats.domain.enums import ProposalOutcome
 from aats.domain.ids import stable_id
-from aats.domain.market import MarketBar
-from aats.domain.regime import RegimeAssessment, RegimeInputs
+from aats.domain.regime import RegimeAssessment
 from aats.features.calc import (
     FEATURE_VERSION,
     atr_sma,
-    opening_range,
-    ratio,
-    relative_volume,
-    session_vwap_approx,
 )
-from aats.regime import RegimeParams, abs_return, classify, realized_vol_annualised
+from aats.regime import RegimeParams, classify
 from aats.replay.clock import ReplayClock
 from aats.replay.event_log import EventLog
 from aats.replay.fixtures import SessionFixture
+from aats.replay.tracker import SymbolTracker, regime_inputs_at
 from aats.strategies.orb_vwap.params import OrbVwapParams
-from aats.strategies.orb_vwap.variant_a import EvalContext, evaluate
 
 CHECKPOINT_MINUTES = (15, 30, 60, 120)
-BENCHMARK_MAX_LAG = timedelta(minutes=1)
 
 
 @dataclass(frozen=True)
@@ -87,7 +80,7 @@ class ReplayResult:
             "checkpoints": checkpoints,
             "outcome_counts": dict(sorted(Counter(p.outcome.value for p in self.proposals).items())),
             "regime_counts": dict(sorted(Counter(p.regime.label.value for p in self.proposals).items())),
-            "decision_runs": _runs(self.proposals),
+            "decision_runs": decision_runs(self.proposals),
             "event_count": len(self.log),
             "event_log_head_hash": self.digest,
         }
@@ -106,7 +99,7 @@ def _snapshot_view(s: FeatureSnapshot) -> dict[str, Any]:
     }
 
 
-def _runs(proposals: tuple[TradeProposal, ...]) -> list[dict[str, Any]]:
+def decision_runs(proposals: tuple[TradeProposal, ...]) -> list[dict[str, Any]]:
     """Compress consecutive identical decisions into runs; candidates are always listed in full."""
     runs: list[dict[str, Any]] = []
     for p in proposals:
@@ -148,30 +141,6 @@ def _runs(proposals: tuple[TradeProposal, ...]) -> list[dict[str, Any]]:
     return runs
 
 
-def regime_inputs_at(fx: SessionFixture, as_of: datetime, now: datetime) -> RegimeInputs:
-    """Build point-in-time regime inputs from benchmark data that had arrived by `now`."""
-    spy = sorted(
-        (b for b in fx.benchmark_bars if b.received_at_utc <= now and b.is_final), key=lambda b: b.start_utc
-    )
-    last = spy[-1] if spy else None
-    stale = last is None or last.end_utc < as_of - BENCHMARK_MAX_LAG
-    breadth = dict(fx.breadth)
-    five_ago = next(
-        (b for b in reversed(spy) if last and b.end_utc == last.end_utc - timedelta(minutes=5)), None
-    )
-    return RegimeInputs(
-        as_of_utc=as_of,
-        spy_last=last.close if last else None,
-        spy_vwap=session_vwap_approx(spy) if spy else None,
-        breadth_above_vwap=breadth.get(last.start_utc) if last else None,
-        spy_realized_vol_20d=realized_vol_annualised(list(fx.spy_daily_closes)),
-        spy_5m_abs_return=abs_return(last.close, five_ago.close) if last and five_ago else None,
-        spy_5m_abs_return_norm=fx.spy_5m_abs_return_norm,
-        macro_events=fx.macro_events,
-        inputs_stale=stale,
-    )
-
-
 def run_replay(
     fx: SessionFixture,
     params: OrbVwapParams,
@@ -186,77 +155,34 @@ def run_replay(
     session_id = stable_id("session", fx.session_date.isoformat(), params.strategy_version)
     clock = ReplayClock(session.open_utc)
     log = EventLog(log_path)
-    orb_end = session.open_utc + timedelta(minutes=params.opening_range_minutes)
-    atr = atr_sma(fx.daily_history, 14)
-
-    seen: list[MarketBar] = []
-    snapshots: list[FeatureSnapshot] = []
-    proposals: list[TradeProposal] = []
-    has_candidate = False
-    report = None
+    track = SymbolTracker(
+        symbol=fx.symbol,
+        session=session,
+        session_id=session_id,
+        params=params,
+        atr14=atr_sma(fx.daily_history, 14),
+        open_volume_history=fx.open_volume_history,
+    )
+    feed = fx.benchmark
 
     for bar in fx.bars:
         now = clock.advance_to(bar.received_at_utc)
         bar_event = log.append("BarReceived", bar, now)
-        seen.append(bar)
-
-        # Point-in-time quality: only what has arrived so far.
-        report = check_intraday_bars(seen, session)
-        usable = sorted({b.start_utc: b for b in seen if b.is_final}.values(), key=lambda b: b.start_utc)
-
-        orb_res = opening_range(usable, session, params.opening_range_minutes)
-        orb = orb_res.opening_range
-        rvol = None
-        if orb is not None:
-            open_vol = sum(b.volume for b in usable if b.start_utc < orb_end)
-            rvol = relative_volume(open_vol, fx.open_volume_history, params.rvol_min_history_sessions)
-
-        snap = FeatureSnapshot(
-            snapshot_id=stable_id(
-                "snapshot", session_id, fx.symbol, bar.end_utc.isoformat(), bar_event.seq, FEATURE_VERSION
-            ),
-            symbol=fx.symbol,
-            as_of_utc=bar.end_utc,
-            feature_version=FEATURE_VERSION,
-            raw_event_refs=(stable_id("bar", fx.symbol, bar.start_utc.isoformat()),),
-            last_close=usable[-1].close if usable else bar.close,
-            session_vwap=session_vwap_approx(usable),
-            vwap_method="VWAP_APPROX_TYPICAL_PRICE",
-            opening_range=orb,
-            atr14=atr,
-            orb_width_atr=None if orb is None else ratio(orb.width, atr),
-            rvol_open=rvol,
-            cumulative_volume=sum(b.volume for b in usable),
-            quality=report.status,
-            quality_flags=tuple(sorted({i.code for i in report.issues})),
-        )
+        snap = track.ingest(bar, bar_event.seq)  # point-in-time: only what has arrived so far
         log.append("FeatureSnapshot", snap, now)
-        snapshots.append(snap)
-
-        if bar.end_utc < orb_end:
+        if bar.end_utc < track.orb_end:
             continue  # never evaluate an incomplete opening range
-        regime: RegimeAssessment = classify(regime_inputs_at(fx, bar.end_utc, now), regime_params)
+        regime: RegimeAssessment = classify(regime_inputs_at(feed, bar.end_utc, now), regime_params)
         log.append("RegimeAssessment", regime, now)
-        ctx = EvalContext(
-            session=session,
-            session_id=session_id,
-            snapshot=snap,
-            orb_status=orb_res.reason,
-            already_candidate_today=has_candidate,
-            decision_key=str(bar_event.seq),
-            regime=regime,
-        )
-        proposal = evaluate(ctx, params, cal.to_exchange_time(bar.end_utc))
+        proposal = track.decide(snap, str(bar_event.seq), regime, cal.to_exchange_time(bar.end_utc))
         log.append("TradeProposal", proposal, now)
-        proposals.append(proposal)
-        has_candidate = has_candidate or proposal.outcome is ProposalOutcome.CANDIDATE
 
     return ReplayResult(
         fixture=fx.name,
-        snapshots=tuple(snapshots),
-        proposals=tuple(proposals),
+        snapshots=tuple(track.snapshots),
+        proposals=tuple(track.proposals),
         log=log,
-        quality_issue_codes=tuple(i.code for i in (report.issues if report else ())),
+        quality_issue_codes=tuple(i.code for i in (track.report.issues if track.report else ())),
         session_open_utc=session.open_utc.isoformat(),
         session_close_utc=session.close_utc.isoformat(),
         early_close=session.early_close,
