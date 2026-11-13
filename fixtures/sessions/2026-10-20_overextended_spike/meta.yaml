@@ -1,0 +1,114 @@
+symbol: ABC
+session_date: '2026-10-20'
+description: Spike far above the range right after 09:45 -> REJECT OVEREXTENDED instead
+  of chasing.
+synthetic: true
+seed: 14
+open_volume_history:
+- 483222
+- 454014
+- 473088
+- 391223
+- 497501
+- 479327
+- 427758
+- 496531
+- 433178
+- 413300
+- 465742
+- 390805
+- 462402
+- 394214
+daily_history:
+- session_date: '2026-09-28'
+  open: '99.51'
+  high: '101.49'
+  low: '97.79'
+  close: '99.76'
+  volume: '3467824'
+- session_date: '2026-09-29'
+  open: '98.92'
+  high: '100.72'
+  low: '97.58'
+  close: '99.38'
+  volume: '3319450'
+- session_date: '2026-09-30'
+  open: '99.22'
+  high: '100.84'
+  low: '98.00'
+  close: '99.62'
+  volume: '2741239'
+- session_date: '2026-10-01'
+  open: '98.58'
+  high: '100.61'
+  low: '96.86'
+  close: '98.90'
+  volume: '2413245'
+- session_date: '2026-10-02'
+  open: '98.36'
+  high: '100.00'
+  low: '96.99'
+  close: '98.63'
+  volume: '3292423'
+- session_date: '2026-10-03'
+  open: '98.25'
+  high: '99.85'
+  low: '96.45'
+  close: '98.04'
+  volume: '3416933'
+- session_date: '2026-10-04'
+  open: '98.49'
+  high: '100.05'
+  low: '97.01'
+  close: '98.57'
+  volume: '2561322'
+- session_date: '2026-10-05'
+  open: '98.92'
+  high: '100.40'
+  low: '96.91'
+  close: '98.39'
+  volume: '2780485'
+- session_date: '2026-10-06'
+  open: '97.08'
+  high: '99.10'
+  low: '95.70'
+  close: '97.71'
+  volume: '2883797'
+- session_date: '2026-10-07'
+  open: '95.99'
+  high: '97.96'
+  low: '94.42'
+  close: '96.39'
+  volume: '2635082'
+- session_date: '2026-10-08'
+  open: '96.13'
+  high: '97.57'
+  low: '94.55'
+  close: '95.98'
+  volume: '3067923'
+- session_date: '2026-10-09'
+  open: '95.75'
+  high: '97.06'
+  low: '94.25'
+  close: '95.56'
+  volume: '2658935'
+- session_date: '2026-10-10'
+  open: '95.26'
+  high: '96.60'
+  low: '93.92'
+  close: '95.26'
+  volume: '3436302'
+- session_date: '2026-10-11'
+  open: '96.50'
+  high: '98.04'
+  low: '94.27'
+  close: '95.80'
+  volume: '2776334'
+- session_date: '2026-10-12'
+  open: '95.71'
+  high: '97.38'
+  low: '93.89'
+  close: '95.56'
+  volume: '2722251'
+expect:
+  has_reason: OVEREXTENDED

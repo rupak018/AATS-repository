@@ -1,0 +1,23 @@
+# ORB_VWAP_LONG variant A - research configuration.
+# EVERY value below is a research Hypothesis (design section 8), to be fitted on the training window
+# only and frozen before the holdout is opened. Changing any value changes parameter_hash and
+# therefore every golden file: regenerate with `make golden-update` and review the diff.
+strategy_id: ORB_VWAP_LONG
+variant: A_CLOSE_CONFIRM
+strategy_version: 0.2.0-research
+feature_version: features-1.0.0
+opening_range_minutes: 15
+breakout_buffer_atr: "0.02"
+tick_size: "0.01"
+orb_width_atr_min: "0.10"
+orb_width_atr_max: "0.60"
+max_extension_atr: "0.25"
+rvol_min: "1.0"
+rvol_min_history_sessions: 10
+min_price: "5.00"
+min_atr: "0.50"
+min_stop_distance: "0.05"
+stop_rule: S1_ORB_LOW
+proposal_expiry_minutes: 3
+last_entry_time_et: "11:30:00"
+regime_rule_version: regime-not-implemented

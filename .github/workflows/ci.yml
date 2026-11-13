@@ -1,0 +1,67 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 22 * * *"   # nightly 22:00 UTC (06:00 SGT): deep property run
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint + types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy
+
+  test:
+    name: tests (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13"]
+    env:
+      # Nightly runs use far more property cases; PRs stay fast.
+      AATS_PROPERTY_CASES: ${{ github.event_name == 'schedule' && '1000' || '60' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: pip install -e ".[dev,calendar]"
+      - name: unit, property, architecture, integration
+        run: >
+          pytest tests --ignore=tests/golden
+          --cov=aats --cov-report=term-missing --cov-report=xml --cov-fail-under=85
+      - name: golden replay regression
+        run: pytest tests/golden -v
+      - name: explain golden drift
+        if: failure()
+        run: |
+          python tools/update_golden.py --yes
+          git diff --stat tests/golden/expected
+          git diff tests/golden/expected > golden.diff || true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: golden-diff-py${{ matrix.python }}
+          path: golden.diff
+          if-no-files-found: ignore

@@ -1,0 +1,97 @@
+{
+  "checkpoints": [
+    {
+      "as_of_utc": "2026-10-22T13:45:00+00:00",
+      "atr14": "3.290000",
+      "cumulative_volume": 910658,
+      "last_close": "100.80",
+      "orb_width_atr": "0.273556",
+      "quality": "VALID",
+      "rvol_open": "2.069387",
+      "session_vwap": "100.653276"
+    },
+    {
+      "as_of_utc": "2026-10-22T14:00:00+00:00",
+      "atr14": "3.290000",
+      "cumulative_volume": 1360519,
+      "last_close": "100.83",
+      "orb_width_atr": "0.273556",
+      "quality": "VALID",
+      "rvol_open": "2.069387",
+      "session_vwap": "100.711308"
+    },
+    {
+      "as_of_utc": "2026-10-22T14:30:00+00:00",
+      "atr14": "3.290000",
+      "cumulative_volume": 2317225,
+      "last_close": "100.94",
+      "orb_width_atr": "0.273556",
+      "quality": "INVALID",
+      "rvol_open": "2.069387",
+      "session_vwap": "100.786679"
+    },
+    {
+      "as_of_utc": "2026-10-22T15:30:00+00:00",
+      "atr14": "3.290000",
+      "cumulative_volume": 3278802,
+      "last_close": "101.96",
+      "orb_width_atr": "0.273556",
+      "quality": "INVALID",
+      "rvol_open": "2.069387",
+      "session_vwap": "101.028180"
+    },
+    {
+      "as_of_utc": "2026-10-22T20:00:00+00:00",
+      "atr14": "3.290000",
+      "cumulative_volume": 8071503,
+      "last_close": "101.95",
+      "orb_width_atr": "0.273556",
+      "quality": "INVALID",
+      "rvol_open": "2.069387",
+      "session_vwap": "101.689343"
+    }
+  ],
+  "decision_runs": [
+    {
+      "count": 22,
+      "from": "2026-10-22T13:45:00+00:00",
+      "outcome": "WAIT",
+      "reasons": [
+        "NO_BREAKOUT"
+      ],
+      "to": "2026-10-22T14:06:00+00:00"
+    },
+    {
+      "count": 355,
+      "from": "2026-10-22T14:06:00+00:00",
+      "outcome": "REJECT",
+      "reasons": [
+        "DATA_QUALITY_FAILED"
+      ],
+      "to": "2026-10-22T20:00:00+00:00"
+    }
+  ],
+  "event_count": 1159,
+  "event_log_head_hash": "06fcbc859ec1044202f942cd3f325c3d597d25576d3ea0c1b73ca649d8ea9e3b",
+  "fixture": "2026-10-22_duplicate_bar",
+  "opening_range": {
+    "high": "101.13",
+    "low": "100.23"
+  },
+  "outcome_counts": {
+    "REJECT": 355,
+    "WAIT": 22
+  },
+  "quality_issue_codes": [
+    "DUPLICATE_BAR"
+  ],
+  "session": {
+    "close_utc": "2026-10-22T20:00:00+00:00",
+    "early_close": false,
+    "open_utc": "2026-10-22T13:30:00+00:00"
+  },
+  "versions": {
+    "feature_version": "features-1.0.0",
+    "params_hash": "0da8e17db5d8f5ec8e646b7692df0ea3b07bbca73eb2611babcba8e1819d83ea"
+  }
+}

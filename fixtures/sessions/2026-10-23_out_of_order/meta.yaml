@@ -1,0 +1,114 @@
+symbol: ABC
+session_date: '2026-10-23'
+description: Bars for 10:20 and 10:21 arrive swapped -> OUT_OF_ORDER detected, quality
+  fails.
+synthetic: true
+seed: 17
+open_volume_history:
+- 429470
+- 486282
+- 484172
+- 449217
+- 456668
+- 436647
+- 434351
+- 526279
+- 403938
+- 529973
+- 421664
+- 508965
+- 415801
+- 443020
+daily_history:
+- session_date: '2026-10-01'
+  open: '100.50'
+  high: '101.73'
+  low: '98.95'
+  close: '100.18'
+  volume: '3561463'
+- session_date: '2026-10-02'
+  open: '100.45'
+  high: '101.71'
+  low: '99.02'
+  close: '100.28'
+  volume: '3226711'
+- session_date: '2026-10-03'
+  open: '101.08'
+  high: '102.65'
+  low: '99.49'
+  close: '101.06'
+  volume: '3563441'
+- session_date: '2026-10-04'
+  open: '100.04'
+  high: '101.82'
+  low: '98.74'
+  close: '100.52'
+  volume: '3151311'
+- session_date: '2026-10-05'
+  open: '99.71'
+  high: '101.22'
+  low: '98.37'
+  close: '99.87'
+  volume: '2873758'
+- session_date: '2026-10-06'
+  open: '101.48'
+  high: '103.11'
+  low: '99.49'
+  close: '101.12'
+  volume: '2469444'
+- session_date: '2026-10-07'
+  open: '101.65'
+  high: '103.48'
+  low: '99.98'
+  close: '101.81'
+  volume: '2628318'
+- session_date: '2026-10-08'
+  open: '101.99'
+  high: '103.58'
+  low: '100.29'
+  close: '101.88'
+  volume: '3240710'
+- session_date: '2026-10-09'
+  open: '102.33'
+  high: '103.85'
+  low: '100.53'
+  close: '102.06'
+  volume: '2856990'
+- session_date: '2026-10-10'
+  open: '100.52'
+  high: '101.97'
+  low: '99.27'
+  close: '100.72'
+  volume: '2471494'
+- session_date: '2026-10-11'
+  open: '99.97'
+  high: '101.78'
+  low: '98.67'
+  close: '100.48'
+  volume: '2993072'
+- session_date: '2026-10-12'
+  open: '99.80'
+  high: '101.46'
+  low: '98.37'
+  close: '100.03'
+  volume: '3534873'
+- session_date: '2026-10-13'
+  open: '100.66'
+  high: '102.35'
+  low: '98.85'
+  close: '100.54'
+  volume: '2528439'
+- session_date: '2026-10-14'
+  open: '100.42'
+  high: '102.35'
+  low: '99.11'
+  close: '101.04'
+  volume: '2570771'
+- session_date: '2026-10-15'
+  open: '100.94'
+  high: '102.77'
+  low: '99.23'
+  close: '101.06'
+  volume: '3352105'
+expect:
+  quality_issue: OUT_OF_ORDER

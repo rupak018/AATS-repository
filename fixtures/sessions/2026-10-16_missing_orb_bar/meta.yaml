@@ -1,0 +1,115 @@
+symbol: ABC
+session_date: '2026-10-16'
+description: The 09:37 bar never arrives -> GAP, data quality fails, opening range
+  invalid -> no candidate.
+synthetic: true
+seed: 13
+open_volume_history:
+- 403968
+- 394721
+- 456838
+- 428211
+- 484137
+- 432411
+- 497548
+- 416289
+- 434723
+- 487805
+- 500926
+- 492602
+- 475326
+- 449672
+daily_history:
+- session_date: '2026-09-24'
+  open: '98.18'
+  high: '99.58'
+  low: '96.37'
+  close: '97.77'
+  volume: '2894893'
+- session_date: '2026-09-25'
+  open: '97.02'
+  high: '99.22'
+  low: '95.27'
+  close: '97.48'
+  volume: '2797363'
+- session_date: '2026-09-26'
+  open: '97.35'
+  high: '99.22'
+  low: '96.07'
+  close: '97.94'
+  volume: '3497171'
+- session_date: '2026-09-27'
+  open: '96.63'
+  high: '99.02'
+  low: '95.12'
+  close: '97.51'
+  volume: '3455919'
+- session_date: '2026-09-28'
+  open: '96.06'
+  high: '97.94'
+  low: '94.38'
+  close: '96.25'
+  volume: '2636581'
+- session_date: '2026-09-29'
+  open: '96.36'
+  high: '98.03'
+  low: '94.86'
+  close: '96.52'
+  volume: '2812166'
+- session_date: '2026-09-30'
+  open: '96.18'
+  high: '97.57'
+  low: '94.68'
+  close: '96.06'
+  volume: '3287099'
+- session_date: '2026-10-01'
+  open: '95.77'
+  high: '97.06'
+  low: '94.19'
+  close: '95.48'
+  volume: '2591966'
+- session_date: '2026-10-02'
+  open: '94.88'
+  high: '96.80'
+  low: '93.34'
+  close: '95.26'
+  volume: '3491664'
+- session_date: '2026-10-03'
+  open: '95.82'
+  high: '97.52'
+  low: '93.95'
+  close: '95.65'
+  volume: '3224422'
+- session_date: '2026-10-04'
+  open: '95.55'
+  high: '97.22'
+  low: '94.09'
+  close: '95.77'
+  volume: '3422662'
+- session_date: '2026-10-05'
+  open: '96.57'
+  high: '98.48'
+  low: '94.79'
+  close: '96.70'
+  volume: '2810996'
+- session_date: '2026-10-06'
+  open: '95.19'
+  high: '97.30'
+  low: '93.90'
+  close: '96.00'
+  volume: '3133654'
+- session_date: '2026-10-07'
+  open: '96.16'
+  high: '97.89'
+  low: '93.98'
+  close: '95.71'
+  volume: '2924635'
+- session_date: '2026-10-08'
+  open: '96.56'
+  high: '98.11'
+  low: '94.68'
+  close: '96.23'
+  volume: '2730799'
+expect:
+  candidates: 0
+  quality_issue: GAP

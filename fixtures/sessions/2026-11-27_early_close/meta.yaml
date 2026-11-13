@@ -1,0 +1,115 @@
+symbol: ABC
+session_date: '2026-11-27'
+description: Early close (13:00 ET = 18:00 UTC). Breakout only after 11:30 ET -> NO_TRADE
+  outside entry window.
+synthetic: true
+seed: 19
+open_volume_history:
+- 393281
+- 376855
+- 483463
+- 386865
+- 474169
+- 486760
+- 489672
+- 377450
+- 443526
+- 378201
+- 391292
+- 412334
+- 437504
+- 425104
+daily_history:
+- session_date: '2026-11-05'
+  open: '99.76'
+  high: '101.37'
+  low: '97.81'
+  close: '99.42'
+  volume: '2797810'
+- session_date: '2026-11-06'
+  open: '98.91'
+  high: '100.91'
+  low: '97.24'
+  close: '99.24'
+  volume: '3235054'
+- session_date: '2026-11-07'
+  open: '98.76'
+  high: '100.14'
+  low: '97.32'
+  close: '98.70'
+  volume: '2666808'
+- session_date: '2026-11-08'
+  open: '99.47'
+  high: '101.10'
+  low: '97.78'
+  close: '99.42'
+  volume: '2908379'
+- session_date: '2026-11-09'
+  open: '98.06'
+  high: '99.44'
+  low: '96.63'
+  close: '98.00'
+  volume: '2903777'
+- session_date: '2026-11-10'
+  open: '98.27'
+  high: '100.03'
+  low: '96.97'
+  close: '98.74'
+  volume: '2886218'
+- session_date: '2026-11-11'
+  open: '98.18'
+  high: '99.97'
+  low: '96.51'
+  close: '98.30'
+  volume: '3372856'
+- session_date: '2026-11-12'
+  open: '99.21'
+  high: '100.41'
+  low: '97.88'
+  close: '99.08'
+  volume: '2997205'
+- session_date: '2026-11-13'
+  open: '99.95'
+  high: '101.21'
+  low: '98.67'
+  close: '99.92'
+  volume: '2461624'
+- session_date: '2026-11-14'
+  open: '99.74'
+  high: '101.28'
+  low: '98.32'
+  close: '99.87'
+  volume: '2447910'
+- session_date: '2026-11-15'
+  open: '99.35'
+  high: '100.93'
+  low: '97.90'
+  close: '99.48'
+  volume: '3251860'
+- session_date: '2026-11-16'
+  open: '98.38'
+  high: '100.27'
+  low: '96.69'
+  close: '98.57'
+  volume: '2623749'
+- session_date: '2026-11-17'
+  open: '98.75'
+  high: '100.43'
+  low: '96.82'
+  close: '98.50'
+  volume: '3123375'
+- session_date: '2026-11-18'
+  open: '98.89'
+  high: '100.15'
+  low: '97.34'
+  close: '98.60'
+  volume: '2954835'
+- session_date: '2026-11-19'
+  open: '99.03'
+  high: '100.55'
+  low: '97.10'
+  close: '98.62'
+  volume: '3238989'
+expect:
+  candidates: 0
+  early_close: true

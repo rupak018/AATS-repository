@@ -1,0 +1,8 @@
+# Local replay profile. v1 recognises only test / replay / paper; "live" fails at startup.
+mode: replay
+broker:
+  adapter: simulated
+  base_url: "simulated://localhost"
+data_root: fixtures
+event_log_dir: var/event_logs
+llm_enabled: false

@@ -1,0 +1,115 @@
+symbol: ABC
+session_date: '2026-10-22'
+description: A duplicated 10:05 bar arrives before any breakout -> data quality fails,
+  no candidate afterwards.
+synthetic: true
+seed: 16
+open_volume_history:
+- 449111
+- 410491
+- 458851
+- 500650
+- 415496
+- 478673
+- 430172
+- 424313
+- 448692
+- 397371
+- 433634
+- 407977
+- 416328
+- 489104
+daily_history:
+- session_date: '2026-09-30'
+  open: '98.68'
+  high: '100.62'
+  low: '97.01'
+  close: '98.95'
+  volume: '3568926'
+- session_date: '2026-10-01'
+  open: '100.00'
+  high: '101.32'
+  low: '98.27'
+  close: '99.59'
+  volume: '2539407'
+- session_date: '2026-10-02'
+  open: '101.15'
+  high: '102.57'
+  low: '99.41'
+  close: '100.83'
+  volume: '2907719'
+- session_date: '2026-10-03'
+  open: '100.51'
+  high: '102.41'
+  low: '99.12'
+  close: '101.02'
+  volume: '3536206'
+- session_date: '2026-10-04'
+  open: '100.87'
+  high: '103.19'
+  low: '99.12'
+  close: '101.44'
+  volume: '3068664'
+- session_date: '2026-10-05'
+  open: '100.88'
+  high: '102.14'
+  low: '99.55'
+  close: '100.81'
+  volume: '2632138'
+- session_date: '2026-10-06'
+  open: '99.49'
+  high: '101.39'
+  low: '97.83'
+  close: '99.73'
+  volume: '2652464'
+- session_date: '2026-10-07'
+  open: '99.08'
+  high: '100.79'
+  low: '97.34'
+  close: '99.06'
+  volume: '2576692'
+- session_date: '2026-10-08'
+  open: '100.50'
+  high: '102.19'
+  low: '98.42'
+  close: '100.12'
+  volume: '2799613'
+- session_date: '2026-10-09'
+  open: '99.93'
+  high: '101.42'
+  low: '98.70'
+  close: '100.19'
+  volume: '3529223'
+- session_date: '2026-10-10'
+  open: '101.01'
+  high: '102.71'
+  low: '99.36'
+  close: '101.07'
+  volume: '2495723'
+- session_date: '2026-10-11'
+  open: '101.65'
+  high: '103.22'
+  low: '99.96'
+  close: '101.53'
+  volume: '3146093'
+- session_date: '2026-10-12'
+  open: '101.80'
+  high: '103.38'
+  low: '99.72'
+  close: '101.30'
+  volume: '2757970'
+- session_date: '2026-10-13'
+  open: '101.21'
+  high: '103.24'
+  low: '99.62'
+  close: '101.66'
+  volume: '2466342'
+- session_date: '2026-10-14'
+  open: '101.55'
+  high: '102.83'
+  low: '100.32'
+  close: '101.60'
+  volume: '2645782'
+expect:
+  candidates: 0
+  quality_issue: DUPLICATE_BAR

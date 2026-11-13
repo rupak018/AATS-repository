@@ -1,0 +1,114 @@
+symbol: ABC
+session_date: '2026-10-14'
+description: Valid range, high RVOL, steady breakout above ORB high and VWAP -> one
+  CANDIDATE, then no re-entry.
+synthetic: true
+seed: 11
+open_volume_history:
+- 479056
+- 471539
+- 427126
+- 480482
+- 483729
+- 475808
+- 504643
+- 387694
+- 499944
+- 427522
+- 467557
+- 407468
+- 494561
+- 377474
+daily_history:
+- session_date: '2026-09-22'
+  open: '98.49'
+  high: '100.05'
+  low: '97.05'
+  close: '98.62'
+  volume: '2843182'
+- session_date: '2026-09-23'
+  open: '97.41'
+  high: '99.43'
+  low: '95.99'
+  close: '98.01'
+  volume: '3165633'
+- session_date: '2026-09-24'
+  open: '97.98'
+  high: '99.72'
+  low: '95.98'
+  close: '97.72'
+  volume: '2785950'
+- session_date: '2026-09-25'
+  open: '98.37'
+  high: '100.02'
+  low: '96.52'
+  close: '98.17'
+  volume: '2653606'
+- session_date: '2026-09-26'
+  open: '97.63'
+  high: '99.74'
+  low: '96.03'
+  close: '98.14'
+  volume: '2612753'
+- session_date: '2026-09-27'
+  open: '98.54'
+  high: '99.95'
+  low: '96.99'
+  close: '98.40'
+  volume: '2916899'
+- session_date: '2026-09-28'
+  open: '99.13'
+  high: '100.58'
+  low: '97.66'
+  close: '99.11'
+  volume: '2785798'
+- session_date: '2026-09-29'
+  open: '97.44'
+  high: '98.99'
+  low: '96.12'
+  close: '97.67'
+  volume: '3456577'
+- session_date: '2026-09-30'
+  open: '97.84'
+  high: '99.10'
+  low: '95.97'
+  close: '97.23'
+  volume: '3585000'
+- session_date: '2026-10-01'
+  open: '96.28'
+  high: '97.61'
+  low: '94.51'
+  close: '95.84'
+  volume: '2889860'
+- session_date: '2026-10-02'
+  open: '95.50'
+  high: '97.10'
+  low: '94.13'
+  close: '95.74'
+  volume: '3212658'
+- session_date: '2026-10-03'
+  open: '96.13'
+  high: '97.55'
+  low: '94.82'
+  close: '96.24'
+  volume: '2828623'
+- session_date: '2026-10-04'
+  open: '96.56'
+  high: '98.16'
+  low: '94.98'
+  close: '96.58'
+  volume: '2853740'
+- session_date: '2026-10-05'
+  open: '96.10'
+  high: '97.89'
+  low: '94.54'
+  close: '96.32'
+  volume: '3465157'
+- session_date: '2026-10-06'
+  open: '96.40'
+  high: '98.35'
+  low: '94.90'
+  close: '96.85'
+  volume: '3081282'
+expect:
+  candidates: 1

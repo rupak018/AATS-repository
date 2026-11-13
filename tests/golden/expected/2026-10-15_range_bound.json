@@ -1,0 +1,95 @@
+{
+  "checkpoints": [
+    {
+      "as_of_utc": "2026-10-15T13:45:00+00:00",
+      "atr14": "3.205714",
+      "cumulative_volume": 898942,
+      "last_close": "100.78",
+      "orb_width_atr": "0.283868",
+      "quality": "VALID",
+      "rvol_open": "1.882094",
+      "session_vwap": "100.649148"
+    },
+    {
+      "as_of_utc": "2026-10-15T14:00:00+00:00",
+      "atr14": "3.205714",
+      "cumulative_volume": 1365840,
+      "last_close": "100.79",
+      "orb_width_atr": "0.283868",
+      "quality": "VALID",
+      "rvol_open": "1.882094",
+      "session_vwap": "100.691806"
+    },
+    {
+      "as_of_utc": "2026-10-15T14:30:00+00:00",
+      "atr14": "3.205714",
+      "cumulative_volume": 2331244,
+      "last_close": "100.57",
+      "orb_width_atr": "0.283868",
+      "quality": "VALID",
+      "rvol_open": "1.882094",
+      "session_vwap": "100.681183"
+    },
+    {
+      "as_of_utc": "2026-10-15T15:30:00+00:00",
+      "atr14": "3.205714",
+      "cumulative_volume": 3310118,
+      "last_close": "100.74",
+      "orb_width_atr": "0.283868",
+      "quality": "VALID",
+      "rvol_open": "1.882094",
+      "session_vwap": "100.685314"
+    },
+    {
+      "as_of_utc": "2026-10-15T20:00:00+00:00",
+      "atr14": "3.205714",
+      "cumulative_volume": 8023697,
+      "last_close": "100.74",
+      "orb_width_atr": "0.283868",
+      "quality": "VALID",
+      "rvol_open": "1.882094",
+      "session_vwap": "100.661413"
+    }
+  ],
+  "decision_runs": [
+    {
+      "count": 106,
+      "from": "2026-10-15T13:45:00+00:00",
+      "outcome": "WAIT",
+      "reasons": [
+        "NO_BREAKOUT"
+      ],
+      "to": "2026-10-15T15:30:00+00:00"
+    },
+    {
+      "count": 270,
+      "from": "2026-10-15T15:31:00+00:00",
+      "outcome": "NO_TRADE",
+      "reasons": [
+        "OUTSIDE_ENTRY_WINDOW"
+      ],
+      "to": "2026-10-15T20:00:00+00:00"
+    }
+  ],
+  "event_count": 1156,
+  "event_log_head_hash": "c56aa4472a0644a2c918fa4df0a0e290ffbac0f7e943728d5925e621031b2a07",
+  "fixture": "2026-10-15_range_bound",
+  "opening_range": {
+    "high": "101.16",
+    "low": "100.25"
+  },
+  "outcome_counts": {
+    "NO_TRADE": 270,
+    "WAIT": 106
+  },
+  "quality_issue_codes": [],
+  "session": {
+    "close_utc": "2026-10-15T20:00:00+00:00",
+    "early_close": false,
+    "open_utc": "2026-10-15T13:30:00+00:00"
+  },
+  "versions": {
+    "feature_version": "features-1.0.0",
+    "params_hash": "0da8e17db5d8f5ec8e646b7692df0ea3b07bbca73eb2611babcba8e1819d83ea"
+  }
+}

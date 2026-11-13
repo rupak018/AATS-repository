@@ -1,0 +1,109 @@
+{
+  "checkpoints": [
+    {
+      "as_of_utc": "2026-11-02T14:45:00+00:00",
+      "atr14": "3.374286",
+      "cumulative_volume": 897055,
+      "last_close": "100.81",
+      "orb_width_atr": "0.240051",
+      "quality": "VALID",
+      "rvol_open": "1.959428",
+      "session_vwap": "100.651662"
+    },
+    {
+      "as_of_utc": "2026-11-02T15:00:00+00:00",
+      "atr14": "3.374286",
+      "cumulative_volume": 1379329,
+      "last_close": "101.00",
+      "orb_width_atr": "0.240051",
+      "quality": "VALID",
+      "rvol_open": "1.959428",
+      "session_vwap": "100.729025"
+    },
+    {
+      "as_of_utc": "2026-11-02T15:30:00+00:00",
+      "atr14": "3.374286",
+      "cumulative_volume": 2360627,
+      "last_close": "101.90",
+      "orb_width_atr": "0.240051",
+      "quality": "VALID",
+      "rvol_open": "1.959428",
+      "session_vwap": "101.072161"
+    },
+    {
+      "as_of_utc": "2026-11-02T16:30:00+00:00",
+      "atr14": "3.374286",
+      "cumulative_volume": 3347252,
+      "last_close": "102.55",
+      "orb_width_atr": "0.240051",
+      "quality": "VALID",
+      "rvol_open": "1.959428",
+      "session_vwap": "101.464622"
+    },
+    {
+      "as_of_utc": "2026-11-02T21:00:00+00:00",
+      "atr14": "3.374286",
+      "cumulative_volume": 8164106,
+      "last_close": "101.61",
+      "orb_width_atr": "0.240051",
+      "quality": "VALID",
+      "rvol_open": "1.959428",
+      "session_vwap": "101.789428"
+    }
+  ],
+  "decision_runs": [
+    {
+      "count": 17,
+      "from": "2026-11-02T14:45:00+00:00",
+      "outcome": "WAIT",
+      "reasons": [
+        "NO_BREAKOUT"
+      ],
+      "to": "2026-11-02T15:01:00+00:00"
+    },
+    {
+      "count": 1,
+      "entry_reference": "101.17",
+      "expires_at_utc": "2026-11-02T15:05:00+00:00",
+      "from": "2026-11-02T15:02:00+00:00",
+      "outcome": "CANDIDATE",
+      "reasons": [
+        "ORB_BREAKOUT_CONFIRMED",
+        "ABOVE_SESSION_VWAP"
+      ],
+      "stop_reference": "100.27",
+      "to": "2026-11-02T15:02:00+00:00"
+    },
+    {
+      "count": 358,
+      "from": "2026-11-02T15:03:00+00:00",
+      "outcome": "NO_TRADE",
+      "reasons": [
+        "ALREADY_TRADED_TODAY"
+      ],
+      "to": "2026-11-02T21:00:00+00:00"
+    }
+  ],
+  "event_count": 1156,
+  "event_log_head_hash": "540c02e93836c781a3c7beac908496604955fc65340983b7017ecf1b57f29f93",
+  "fixture": "2026-11-02_dst_breakout",
+  "opening_range": {
+    "high": "101.09",
+    "low": "100.28"
+  },
+  "outcome_counts": {
+    "CANDIDATE": 1,
+    "NO_TRADE": 358,
+    "WAIT": 17
+  },
+  "quality_issue_codes": [],
+  "session": {
+    "close_utc": "2026-11-02T21:00:00+00:00",
+    "early_close": false,
+    "open_utc": "2026-11-02T14:30:00+00:00"
+  },
+  "versions": {
+    "feature_version": "features-1.0.0",
+    "params_hash": "0da8e17db5d8f5ec8e646b7692df0ea3b07bbca73eb2611babcba8e1819d83ea"
+  }
+}

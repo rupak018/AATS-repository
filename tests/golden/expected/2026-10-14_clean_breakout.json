@@ -1,0 +1,109 @@
+{
+  "checkpoints": [
+    {
+      "as_of_utc": "2026-10-14T13:45:00+00:00",
+      "atr14": "3.226429",
+      "cumulative_volume": 880872,
+      "last_close": "100.84",
+      "orb_width_atr": "0.269648",
+      "quality": "VALID",
+      "rvol_open": "1.931554",
+      "session_vwap": "100.638747"
+    },
+    {
+      "as_of_utc": "2026-10-14T14:00:00+00:00",
+      "atr14": "3.226429",
+      "cumulative_volume": 1354812,
+      "last_close": "101.13",
+      "orb_width_atr": "0.269648",
+      "quality": "VALID",
+      "rvol_open": "1.931554",
+      "session_vwap": "100.734973"
+    },
+    {
+      "as_of_utc": "2026-10-14T14:30:00+00:00",
+      "atr14": "3.226429",
+      "cumulative_volume": 2323652,
+      "last_close": "101.95",
+      "orb_width_atr": "0.269648",
+      "quality": "VALID",
+      "rvol_open": "1.931554",
+      "session_vwap": "101.078521"
+    },
+    {
+      "as_of_utc": "2026-10-14T15:30:00+00:00",
+      "atr14": "3.226429",
+      "cumulative_volume": 3288845,
+      "last_close": "102.42",
+      "orb_width_atr": "0.269648",
+      "quality": "VALID",
+      "rvol_open": "1.931554",
+      "session_vwap": "101.460440"
+    },
+    {
+      "as_of_utc": "2026-10-14T20:00:00+00:00",
+      "atr14": "3.226429",
+      "cumulative_volume": 8018275,
+      "last_close": "101.60",
+      "orb_width_atr": "0.269648",
+      "quality": "VALID",
+      "rvol_open": "1.931554",
+      "session_vwap": "101.710682"
+    }
+  ],
+  "decision_runs": [
+    {
+      "count": 20,
+      "from": "2026-10-14T13:45:00+00:00",
+      "outcome": "WAIT",
+      "reasons": [
+        "NO_BREAKOUT"
+      ],
+      "to": "2026-10-14T14:04:00+00:00"
+    },
+    {
+      "count": 1,
+      "entry_reference": "101.28",
+      "expires_at_utc": "2026-10-14T14:08:00+00:00",
+      "from": "2026-10-14T14:05:00+00:00",
+      "outcome": "CANDIDATE",
+      "reasons": [
+        "ORB_BREAKOUT_CONFIRMED",
+        "ABOVE_SESSION_VWAP"
+      ],
+      "stop_reference": "100.30",
+      "to": "2026-10-14T14:05:00+00:00"
+    },
+    {
+      "count": 355,
+      "from": "2026-10-14T14:06:00+00:00",
+      "outcome": "NO_TRADE",
+      "reasons": [
+        "ALREADY_TRADED_TODAY"
+      ],
+      "to": "2026-10-14T20:00:00+00:00"
+    }
+  ],
+  "event_count": 1156,
+  "event_log_head_hash": "a300a1f0b082ae8e2e2996f2022afdb51ff9cb8d6a7281f1cc4c655fa43aac92",
+  "fixture": "2026-10-14_clean_breakout",
+  "opening_range": {
+    "high": "101.18",
+    "low": "100.31"
+  },
+  "outcome_counts": {
+    "CANDIDATE": 1,
+    "NO_TRADE": 355,
+    "WAIT": 20
+  },
+  "quality_issue_codes": [],
+  "session": {
+    "close_utc": "2026-10-14T20:00:00+00:00",
+    "early_close": false,
+    "open_utc": "2026-10-14T13:30:00+00:00"
+  },
+  "versions": {
+    "feature_version": "features-1.0.0",
+    "params_hash": "0da8e17db5d8f5ec8e646b7692df0ea3b07bbca73eb2611babcba8e1819d83ea"
+  }
+}

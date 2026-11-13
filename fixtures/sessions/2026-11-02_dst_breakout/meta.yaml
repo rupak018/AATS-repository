@@ -1,0 +1,115 @@
+symbol: ABC
+session_date: '2026-11-02'
+description: 'First session after US daylight saving ends: open is 14:30 UTC, not
+  13:30 -> breakout CANDIDATE.'
+synthetic: true
+seed: 18
+open_volume_history:
+- 450890
+- 441553
+- 487677
+- 485679
+- 426531
+- 451890
+- 439297
+- 460475
+- 444877
+- 418903
+- 480846
+- 480224
+- 460188
+- 480375
+daily_history:
+- session_date: '2026-10-11'
+  open: '98.95'
+  high: '100.25'
+  low: '97.54'
+  close: '98.84'
+  volume: '3196323'
+- session_date: '2026-10-12'
+  open: '97.46'
+  high: '99.47'
+  low: '95.81'
+  close: '97.82'
+  volume: '3437623'
+- session_date: '2026-10-13'
+  open: '97.85'
+  high: '99.76'
+  low: '96.10'
+  close: '98.01'
+  volume: '2461048'
+- session_date: '2026-10-14'
+  open: '98.07'
+  high: '99.55'
+  low: '96.76'
+  close: '98.24'
+  volume: '3580639'
+- session_date: '2026-10-15'
+  open: '97.65'
+  high: '99.77'
+  low: '96.01'
+  close: '98.13'
+  volume: '3557854'
+- session_date: '2026-10-16'
+  open: '97.61'
+  high: '99.69'
+  low: '96.02'
+  close: '98.10'
+  volume: '3365133'
+- session_date: '2026-10-17'
+  open: '98.94'
+  high: '100.54'
+  low: '97.11'
+  close: '98.71'
+  volume: '2730266'
+- session_date: '2026-10-18'
+  open: '99.43'
+  high: '101.04'
+  low: '97.62'
+  close: '99.23'
+  volume: '3351612'
+- session_date: '2026-10-19'
+  open: '98.55'
+  high: '100.35'
+  low: '96.80'
+  close: '98.61'
+  volume: '2457285'
+- session_date: '2026-10-20'
+  open: '97.84'
+  high: '99.55'
+  low: '96.37'
+  close: '98.09'
+  volume: '3000683'
+- session_date: '2026-10-21'
+  open: '96.80'
+  high: '98.76'
+  low: '95.32'
+  close: '97.27'
+  volume: '3261077'
+- session_date: '2026-10-22'
+  open: '98.09'
+  high: '99.61'
+  low: '96.19'
+  close: '97.72'
+  volume: '3497206'
+- session_date: '2026-10-23'
+  open: '97.67'
+  high: '99.53'
+  low: '96.29'
+  close: '98.15'
+  volume: '3599163'
+- session_date: '2026-10-24'
+  open: '98.56'
+  high: '100.09'
+  low: '96.79'
+  close: '98.32'
+  volume: '2750874'
+- session_date: '2026-10-25'
+  open: '97.90'
+  high: '99.17'
+  low: '96.45'
+  close: '97.73'
+  volume: '2478250'
+expect:
+  candidates: 1
+  open_utc: '2026-11-02T14:30:00+00:00'

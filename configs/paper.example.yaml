@@ -1,0 +1,8 @@
+# Paper profile template (milestone M6). Copy to configs/paper.yaml; credentials go in .env, never here.
+mode: paper
+broker:
+  adapter: alpaca_paper
+  base_url: "https://paper-api.alpaca.markets"
+data_root: data
+event_log_dir: var/event_logs
+llm_enabled: false

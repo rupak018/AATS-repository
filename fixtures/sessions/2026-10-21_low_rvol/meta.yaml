@@ -1,0 +1,114 @@
+symbol: ABC
+session_date: '2026-10-21'
+description: Breakout on ordinary volume (opening RVOL about 0.5) -> REJECT RVOL_BELOW_MIN.
+synthetic: true
+seed: 15
+open_volume_history:
+- 1662575
+- 1639885
+- 1648251
+- 2069058
+- 2105113
+- 2124962
+- 2068225
+- 1888520
+- 2026490
+- 1755995
+- 1844486
+- 2010561
+- 2022185
+- 1824107
+daily_history:
+- session_date: '2026-09-29'
+  open: '98.00'
+  high: '99.77'
+  low: '96.57'
+  close: '98.35'
+  volume: '2829699'
+- session_date: '2026-09-30'
+  open: '98.17'
+  high: '99.42'
+  low: '96.86'
+  close: '98.11'
+  volume: '3584183'
+- session_date: '2026-10-01'
+  open: '98.91'
+  high: '100.23'
+  low: '97.10'
+  close: '98.43'
+  volume: '2605430'
+- session_date: '2026-10-02'
+  open: '97.38'
+  high: '99.64'
+  low: '95.76'
+  close: '98.01'
+  volume: '2751473'
+- session_date: '2026-10-03'
+  open: '99.31'
+  high: '100.77'
+  low: '97.51'
+  close: '98.97'
+  volume: '3589114'
+- session_date: '2026-10-04'
+  open: '99.59'
+  high: '101.03'
+  low: '98.29'
+  close: '99.73'
+  volume: '3566709'
+- session_date: '2026-10-05'
+  open: '99.86'
+  high: '101.34'
+  low: '98.56'
+  close: '100.04'
+  volume: '2756403'
+- session_date: '2026-10-06'
+  open: '100.00'
+  high: '102.05'
+  low: '98.23'
+  close: '100.28'
+  volume: '2563595'
+- session_date: '2026-10-07'
+  open: '100.04'
+  high: '101.90'
+  low: '98.60'
+  close: '100.47'
+  volume: '2803191'
+- session_date: '2026-10-08'
+  open: '100.53'
+  high: '102.23'
+  low: '99.33'
+  close: '101.03'
+  volume: '3073884'
+- session_date: '2026-10-09'
+  open: '101.24'
+  high: '102.65'
+  low: '100.01'
+  close: '101.41'
+  volume: '3436841'
+- session_date: '2026-10-10'
+  open: '102.29'
+  high: '104.10'
+  low: '100.61'
+  close: '102.41'
+  volume: '2495278'
+- session_date: '2026-10-11'
+  open: '101.65'
+  high: '103.16'
+  low: '99.92'
+  close: '101.44'
+  volume: '3479967'
+- session_date: '2026-10-12'
+  open: '102.26'
+  high: '103.88'
+  low: '100.13'
+  close: '101.75'
+  volume: '2746310'
+- session_date: '2026-10-13'
+  open: '102.17'
+  high: '103.98'
+  low: '100.51'
+  close: '102.32'
+  volume: '2873373'
+expect:
+  candidates: 0
+  has_reason: RVOL_BELOW_MIN
