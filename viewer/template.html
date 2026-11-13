@@ -1,0 +1,621 @@
+<title>AATS Replay Viewer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: trading-desk review tool. Day list on the left, one replayed session on the right:
+   conditions strip -> stock selection -> price chart with decision strip -> plain-English log. */
+:root {
+  --bg: #f4f4f1;
+  --surface: #fcfcfb;
+  --surface-2: #f0efec;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #7d7b75;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --line: rgba(11, 11, 11, 0.10);
+  --accent: #1c5cab;
+  --accent-wash: rgba(42, 120, 214, 0.10);
+  --price: #2a78d6;
+  --vwap: #eb6834;
+  --orb-wash: rgba(42, 120, 214, 0.08);
+  --forming: rgba(11, 11, 11, 0.04);
+  --vol: #d6d5ce;
+  --r-bull: #2a78d6;
+  --r-bear: #eb6834;
+  --r-chop: #1baf7a;
+  --r-vol: #eda100;
+  --r-news: #e87ba4;
+  --r-unknown: #b4b2aa;
+  --o-candidate: #0ca30c;
+  --o-wait: #dddcd5;
+  --o-reject: #ec835a;
+  --o-notrade: #a9a79f;
+  --stop: #d03b3b;
+  --good-ink: #006300;
+  --bad-ink: #b02a2a;
+  --banner: #fff4dc;
+  --banner-ink: #6b4a00;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d0d0d; --surface: #1a1a19; --surface-2: #232321; --ink: #f0efec; --ink-2: #c3c2b7;
+    --muted: #8f8d86; --grid: #2c2c2a; --axis: #383835; --line: rgba(255, 255, 255, 0.10);
+    --accent: #6da7ec; --accent-wash: rgba(57, 135, 229, 0.16); --price: #3987e5; --vwap: #d95926;
+    --orb-wash: rgba(57, 135, 229, 0.12); --forming: rgba(255, 255, 255, 0.04); --vol: #3a3a37;
+    --r-bull: #3987e5; --r-bear: #d95926; --r-chop: #199e70; --r-vol: #c98500; --r-news: #d55181;
+    --r-unknown: #5a5955; --o-wait: #3a3a37; --o-notrade: #6b6a65; --good-ink: #0ca30c; --bad-ink: #ef7d7d;
+    --banner: #2e2610; --banner-ink: #f2cf7a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d0d0d; --surface: #1a1a19; --surface-2: #232321; --ink: #f0efec; --ink-2: #c3c2b7;
+  --muted: #8f8d86; --grid: #2c2c2a; --axis: #383835; --line: rgba(255, 255, 255, 0.10);
+  --accent: #6da7ec; --accent-wash: rgba(57, 135, 229, 0.16); --price: #3987e5; --vwap: #d95926;
+  --orb-wash: rgba(57, 135, 229, 0.12); --forming: rgba(255, 255, 255, 0.04); --vol: #3a3a37;
+  --r-bull: #3987e5; --r-bear: #d95926; --r-chop: #199e70; --r-vol: #c98500; --r-news: #d55181;
+  --r-unknown: #5a5955; --o-wait: #3a3a37; --o-notrade: #6b6a65; --good-ink: #0ca30c; --bad-ink: #ef7d7d;
+  --banner: #2e2610; --banner-ink: #f2cf7a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-sans); font-size: 14px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+h1, h2, h3 { margin: 0; text-wrap: balance; font-weight: 600; }
+button, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1280px; margin: 0 auto; }
+
+/* Top bar */
+.topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-block: 18px 14px; }
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand h1 { font-size: 20px; letter-spacing: -0.01em; }
+.brand .ver { color: var(--muted); font-size: 12px; }
+.sim { display: inline-flex; align-items: center; gap: 6px; background: var(--banner); color: var(--banner-ink);
+  border-radius: 999px; padding: 4px 12px; font-size: 12.5px; font-weight: 500; }
+.topbar .spacer { flex: 1; }
+.daypick { display: none; }
+
+/* Shell */
+.shell { display: grid; grid-template-columns: 272px minmax(0, 1fr); gap: 20px; align-items: start; }
+.days { position: sticky; top: max(12px, env(safe-area-inset-top, 0px)); background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 8px; }
+.days h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
+  padding: 8px 8px 4px; font-weight: 500; }
+.days ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.days button { width: 100%; text-align: left; background: none; border: 0; border-radius: 6px; padding: 8px;
+  cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; }
+.days button:hover { background: var(--surface-2); }
+.days button[aria-current="true"] { background: var(--accent-wash); }
+.days .t { font-weight: 500; font-size: 13.5px; }
+.days .d { color: var(--muted); font-size: 12px; grid-column: 1; }
+.days .n { grid-row: 1 / span 2; grid-column: 2; align-self: center; }
+
+.main { display: grid; gap: 16px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; min-width: 0; }
+.card > h2 { font-size: 15px; margin-bottom: 4px; }
+.card > .sub { color: var(--ink-2); margin: 0 0 14px; max-width: 72ch; }
+
+/* Day header */
+.dayhead h2 { font-size: 22px; letter-spacing: -0.01em; }
+.dayhead .when { color: var(--ink-2); margin-top: 2px; }
+.dayhead p { margin: 10px 0 0; max-width: 72ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.fact .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.fact .v { font-size: 16px; font-weight: 600; }
+
+/* Chips */
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; padding: 2px 9px;
+  border-radius: 999px; background: var(--surface-2); color: var(--ink-2); white-space: nowrap; }
+.chip i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; flex: none; }
+.chip.ok { color: var(--good-ink); }
+.chip.no { color: var(--bad-ink); }
+
+/* Regime strip */
+.strip { position: relative; height: 28px; border-radius: 4px; overflow: hidden; background: var(--surface-2); }
+.strip .seg { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; padding: 0 8px;
+  font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; color: #fff; border-right: 2px solid var(--surface); }
+.strip .seg.dark-ink { color: #0b0b0b; }
+.strip .forming { position: absolute; top: 0; bottom: 0; left: 0; background: var(--forming);
+  display: flex; align-items: center; padding: 0 8px; font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; }
+.ticks { position: relative; height: 18px; margin-top: 4px; font-size: 11px; color: var(--muted); }
+.ticks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.ticks span:first-child { transform: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 12.5px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.legend i.ln { height: 2px; border-radius: 1px; width: 16px; }
+
+/* Selection */
+.funnel { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+.step { background: var(--surface-2); border-radius: 6px; padding: 10px 12px; }
+.step .v { font-size: 22px; font-weight: 600; }
+.step .k { font-size: 12.5px; color: var(--ink-2); }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+  padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.sel-row { cursor: pointer; }
+tr.sel-row:hover td { background: var(--surface-2); }
+.checks { list-style: none; margin: 6px 0 2px; padding: 0; display: grid; gap: 3px; font-size: 12.5px; }
+.checks li { display: grid; grid-template-columns: 16px 1fr auto; gap: 6px; color: var(--ink-2); }
+.checks .val { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
+.why { color: var(--ink-2); }
+.expand { background: none; border: 0; color: var(--accent); cursor: pointer; padding: 0; font-size: 12.5px; }
+
+/* Stock tabs */
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.tab { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px; font-weight: 500; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.tab small { font-weight: 400; opacity: 0.8; }
+.keys { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-bottom: 12px; }
+.keys .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.keys .v { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 14px; }
+.signal { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: baseline; background: var(--surface-2);
+  border-radius: 6px; padding: 12px 14px; margin-bottom: 14px; border-left: 3px solid var(--o-candidate); }
+.signal strong { font-size: 14px; }
+.signal .mono { font-size: 13px; }
+.chartbox { position: relative; }
+.chartbox svg { display: block; width: 100%; overflow: visible; touch-action: pan-y; }
+.chartbox svg text { font-family: var(--font-sans); font-size: 11px; fill: var(--muted); }
+.chartbox svg text.lbl { fill: var(--ink-2); font-weight: 500; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--line);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12); border-radius: 6px; padding: 8px 10px; font-size: 12.5px; width: 260px; z-index: 5; }
+.tip .time { font-weight: 600; }
+.tip .row { display: grid; grid-template-columns: 14px 1fr auto; align-items: center; gap: 6px; }
+.tip .row i { height: 2px; width: 12px; display: inline-block; }
+.tip .row b { font-family: var(--font-mono); font-weight: 500; }
+.tip .dec { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line); color: var(--ink-2); }
+.tip .dec strong { color: var(--ink); }
+
+/* Decision log */
+.log { list-style: none; margin: 0; padding: 0; display: grid; }
+.log li { display: grid; grid-template-columns: 120px 120px minmax(0, 1fr); gap: 4px 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.log li:last-child { border-bottom: 0; }
+.log .when { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-2); }
+.log .code { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+.notice { background: var(--banner); color: var(--banner-ink); border-radius: 6px; padding: 10px 12px; margin-bottom: 14px; font-size: 13px; }
+.empty { color: var(--muted); padding: 12px 0; }
+
+/* Glossary */
+.gloss { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px 24px; }
+.gloss dt { font-weight: 600; }
+.gloss dd { margin: 2px 0 0; color: var(--ink-2); }
+
+@media (max-width: 900px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .days { display: none; }
+  .daypick { display: block; width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); }
+  .topbar .spacer { display: none; }
+  .funnel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .log li { grid-template-columns: minmax(0, 1fr); }
+  .signal { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .signal > span:nth-child(odd) { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-top: 6px; }
+  .card { padding: 16px; }
+}
+@media (prefers-reduced-motion: no-preference) { .tab, .days button { transition: background 0.12s; } }
+</style>
+
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand"><h1>AATS Replay Viewer</h1><span class="ver" id="ver"></span></div>
+    <span class="sim" role="note">Simulated test data · replay only · no real orders</span>
+    <span class="spacer"></span>
+    <label for="daypick" class="visually-hidden" hidden>Choose a test day</label>
+    <select id="daypick" class="daypick" aria-label="Choose a test day"></select>
+  </header>
+  <div class="shell">
+    <nav class="days" aria-label="Test days">
+      <h2>Test days</h2>
+      <ul id="daylist"></ul>
+    </nav>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+
+<script>const AATS=/*__AATS_DATA__*/null;</script>
+<script>
+(() => {
+  "use strict";
+  const D = AATS;
+  const OUT = D.outcomes, REG = D.regimes;
+  const REG_VAR = { BULL_TREND: "--r-bull", BEAR_TREND: "--r-bear", RANGE_CHOP: "--r-chop",
+    HIGH_VOLATILITY: "--r-vol", NEWS_SHOCK: "--r-news", UNKNOWN: "--r-unknown" };
+  const REG_DARK_INK = { HIGH_VOLATILITY: true, UNKNOWN: true };
+  const OUT_VAR = { CANDIDATE: "--o-candidate", WAIT: "--o-wait", REJECT: "--o-reject", NO_TRADE: "--o-notrade" };
+  const OUT_ICON = { CANDIDATE: "✓", WAIT: "…", REJECT: "✕", NO_TRADE: "–" };
+  const STAGE = {
+    "in-play": ["Traded on", "ok"], "excluded": ["Excluded before the open", "no"],
+    "failed-open": ["Dropped after the open", "no"], "truncated": ["Ranked too low", "no"], "not-ranked": ["Not ranked", "no"],
+  };
+  const $ = (s, r = document) => r.querySelector(s);
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "class") n.className = v; else if (k === "text") n.textContent = v;
+      else if (k === "style") n.style.cssText = v; else if (v !== null && v !== undefined) n.setAttribute(k, v);
+    }
+    for (const k of kids) if (k !== null && k !== undefined) n.append(k);
+    return n;
+  };
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const pad = (n) => String(n).padStart(2, "0");
+  const fmtClock = (m) => `${pad(Math.floor(((m % 1440) + 1440) % 1440 / 60))}:${pad(((m % 60) + 60) % 60)}`;
+  const etOf = (day, i) => fmtClock(day.session.openEtMinutes + i);
+  const sgtOf = (day, i) => {
+    const off = day.session.utcOffsetEt; const sign = off[0] === "-" ? -1 : 1;
+    const etOff = sign * (parseInt(off.slice(1, 3), 10) * 60 + parseInt(off.slice(3), 10));
+    return fmtClock(day.session.openEtMinutes + i + (480 - etOff));
+  };
+  const money = (v) => v === null || v === undefined ? "–" : "$" + v.toFixed(2);
+  const fmtDate = (iso) => new Date(iso + "T12:00:00Z").toLocaleDateString("en-GB",
+    { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  const slug = (id) => id.replace(/_/g, "-");
+
+  document.getElementById("ver").textContent = `Strategy ${D.config.strategyVersion}`;
+
+  // ---------- day list ----------
+  const list = $("#daylist"), pick = $("#daypick");
+  for (const d of D.days) {
+    const badge = d.signals > 0
+      ? el("span", { class: "chip ok n", text: `${d.signals} signal${d.signals > 1 ? "s" : ""}` })
+      : el("span", { class: "chip n", text: "No trade" });
+    const b = el("button", { type: "button", "data-id": d.id },
+      el("span", { class: "t", text: d.title }), el("span", { class: "d", text: fmtDate(d.date) }), badge);
+    b.addEventListener("click", () => { location.hash = slug(d.id); });
+    list.append(el("li", {}, b));
+    pick.append(el("option", { value: d.id, text: `${d.title} · ${d.date}` }));
+  }
+  pick.addEventListener("change", () => { location.hash = slug(pick.value); });
+
+  let state = { day: null, sym: 0 };
+
+  function route() {
+    const h = location.hash.slice(1);
+    const day = D.days.find((d) => slug(d.id) === h) || D.days[0];
+    if (state.day !== day) { state = { day, sym: 0 }; }
+    for (const b of list.querySelectorAll("button")) b.setAttribute("aria-current", String(b.dataset.id === day.id));
+    pick.value = day.id;
+    render();
+  }
+
+  // ---------- render ----------
+  function render() {
+    const day = state.day, main = $("#main");
+    main.replaceChildren();
+    main.append(dayHeader(day), conditions(day));
+    if (day.selection) main.append(selection(day));
+    main.append(stockCard(day), glossary());
+  }
+
+  function dayHeader(day) {
+    const s = day.session;
+    const evaluated = day.symbols.filter((x) => x.runs.length).length;
+    const facts = el("div", { class: "facts" },
+      fact("Trading hours (New York)", `${s.openEt}–${s.closeEt}${s.earlyClose ? " early close" : ""}`),
+      fact("Singapore time", `${s.openSgt}–${s.closeSgt}`),
+      fact(day.kind === "universe" ? "Stocks considered" : "Stock", day.kind === "universe" ? String(day.universeSize) : day.symbols[0].symbol),
+      fact("Stocks evaluated by the rules", String(evaluated)),
+      fact("Buy signals", String(day.signals)));
+    return el("section", { class: "card dayhead" },
+      el("h2", { text: day.title }),
+      el("div", { class: "when", text: `${fmtDate(day.date)} · ${day.kind === "universe" ? "multi-stock session" : "single-stock test"}` }),
+      el("p", { text: day.description }), facts);
+  }
+  const fact = (k, v) => el("div", { class: "fact" }, el("div", { class: "k", text: k }), el("div", { class: "v", text: v }));
+
+  function timeTicks(day) {
+    const n = day.session.minutes, wrap = el("div", { class: "ticks", "aria-hidden": "true" });
+    for (let m = 0; m <= n; m += 30) {
+      if (m % 60 !== 0 && n > 240) continue;
+      const left = (m / n) * 100;
+      const sp = el("span", { text: etOf(day, m), style: `left:${left}%` });
+      if (m === n) sp.style.transform = "translateX(-100%)";
+      wrap.append(sp);
+    }
+    return wrap;
+  }
+
+  function conditions(day) {
+    const n = day.session.minutes, orb = D.config.openingRangeMinutes;
+    const strip = el("div", { class: "strip", role: "img",
+      "aria-label": "Market conditions through the day: " + day.regime.map((r) => `${etOf(day, r[0])} to ${etOf(day, r[1] + 1)} ${REG[r[2]]}`).join("; ") });
+    strip.append(el("div", { class: "forming", style: `width:${(orb / n) * 100}%` }));
+    for (const [a, b, lab] of day.regime) {
+      const w = ((b - a + 1) / n) * 100;
+      const seg = el("div", { class: "seg" + (REG_DARK_INK[lab] ? " dark-ink" : ""), title: `${etOf(day, a)}–${etOf(day, b + 1)} ${REG[lab]}`,
+        style: `left:${(a / n) * 100}%;width:${w}%;background:var(${REG_VAR[lab]})` });
+      seg.textContent = w > 9 ? REG[lab] : "";
+      strip.append(seg);
+    }
+    const used = [...new Set(day.regime.map((r) => r[2]))];
+    const legend = el("div", { class: "legend" }, ...used.map((r) =>
+      el("span", {}, el("i", { style: `background:var(${REG_VAR[r]})` }), document.createTextNode(REG[r]))),
+      el("span", {}, el("i", { style: "background:var(--surface-2);outline:1px solid var(--axis)" }), document.createTextNode(`First ${orb} minutes: opening range forming`)));
+    return el("section", { class: "card" },
+      el("h2", { text: "Market conditions" }),
+      el("p", { class: "sub", text: "The system labels the overall market every minute from the S&P 500 ETF, how many stocks are above their average price, scheduled news and volatility. “Unknown” means market data was missing or late, and the system does not trade." }),
+      strip, timeTicks(day), legend);
+  }
+
+  function selection(day) {
+    const sel = day.selection;
+    const passed = sel.filter((x) => x.stage !== "excluded").length;
+    const inplay = sel.filter((x) => x.stage === "in-play").length;
+    const funnel = el("div", { class: "funnel" },
+      step(String(day.universeSize), "stocks in the universe"),
+      step(String(passed), "passed the pre-market checks"),
+      step(String(inplay), "had unusual opening volume"),
+      step(String(day.signals), "gave a buy signal"));
+    const tbody = el("tbody");
+    for (const s of sel) {
+      const [label, cls] = STAGE[s.stage];
+      const failed = s.checks.filter((c) => !c.passed);
+      const whyText = failed.length ? "Did not meet: " + failed.map((c) => c.name.charAt(0).toLowerCase() + c.name.slice(1)).join("; ")
+        : (s.stage === "in-play" ? "Passed every check" : "");
+      const detail = el("ul", { class: "checks", hidden: "" }, ...s.checks.map((c) =>
+        el("li", {}, el("span", { class: c.passed ? "chip ok" : "chip no", style: "padding:0 4px", text: c.passed ? "✓" : "✕", "aria-label": c.passed ? "passed" : "failed" }),
+          el("span", { text: c.name }), el("span", { class: "val", text: c.value === null ? "" : c.value }))));
+      const btn = el("button", { class: "expand", type: "button", "aria-expanded": "false", text: "Show all checks" });
+      btn.addEventListener("click", (e) => { e.stopPropagation(); const open = detail.hidden; detail.hidden = !open;
+        btn.setAttribute("aria-expanded", String(open)); btn.textContent = open ? "Hide checks" : "Show all checks"; });
+      const tr = el("tr", { class: "sel-row" },
+        el("td", {}, el("strong", { text: s.symbol })),
+        el("td", {}, el("span", { class: `chip ${cls}`, text: label })),
+        el("td", { class: "num", text: s.gap === null ? "–" : `${s.gap >= 0 ? "+" : ""}${(s.gap * 100).toFixed(1)}%` }),
+        el("td", { class: "num", text: s.rvol === null ? "–" : `${s.rvol.toFixed(2)}×` }),
+        el("td", {}, el("div", { class: "why", text: whyText }), btn, detail));
+      tr.addEventListener("click", () => btn.click());
+      tbody.append(tr);
+    }
+    const table = el("div", { class: "tbl" }, el("table", {},
+      el("thead", {}, el("tr", {}, ...["Stock", "Result", "Gap", "Opening volume", "Why"].map((h) => el("th", { text: h })))), tbody));
+    return el("section", { class: "card" },
+      el("h2", { text: "How the stocks were chosen" }),
+      el("p", { class: "sub", text: "Before the open the system checks every stock (type, listing, price, liquidity, volatility). Fifteen minutes after the open it keeps only those trading with unusually high volume. Gap is the overnight price change; opening volume compares the first 15 minutes with a normal day." }),
+      funnel, table);
+  }
+  const step = (v, k) => el("div", { class: "step" }, el("div", { class: "v", text: v }), el("div", { class: "k", text: k }));
+
+  function stockCard(day) {
+    const card = el("section", { class: "card" });
+    card.append(el("h2", { text: day.kind === "universe" ? "Stocks the rules looked at" : "The stock" }));
+    card.append(el("p", { class: "sub", text: "The blue line is the price, the orange line is VWAP (the day's average traded price), and the shaded band is the opening range. The strip under the chart shows what the system decided each minute. Hover or use the arrow keys on the chart for details." }));
+    if (day.symbols.length > 1) {
+      const tabs = el("div", { class: "tabs", role: "tablist", "aria-label": "Stocks" });
+      day.symbols.forEach((s, i) => {
+        const note = s.status === "traded" ? "buy signal" : s.status === "watch-only" ? "not traded on" : "no signal";
+        const t = el("button", { class: "tab", role: "tab", type: "button", "aria-selected": String(i === state.sym), id: `tab-${i}` },
+          document.createTextNode(s.symbol), el("small", { text: note }));
+        t.addEventListener("click", () => { state.sym = i; render(); });
+        tabs.append(t);
+      });
+      card.append(tabs);
+    }
+    const s = day.symbols[state.sym];
+    if (s.status === "watch-only") {
+      card.append(el("div", { class: "notice", text: `${s.symbol} passed the pre-market checks but its opening volume was not unusual enough, so the rules never evaluated it. The chart is shown for reference.` }));
+    }
+    if (s.quality.length) {
+      const map = { GAP: "a missing price bar", DUPLICATE_BAR: "the same price bar received twice", OUT_OF_ORDER: "price bars arriving in the wrong order" };
+      card.append(el("div", { class: "notice", text: `Data problem: ${s.quality.map((q) => map[q] || q).join(", ")}. From that point the system refuses to trade this stock, by design.` }));
+    }
+    card.append(el("div", { class: "keys" },
+      key("Opening range", s.orb ? `${money(s.orb.low)} – ${money(s.orb.high)}` : "not available"),
+      key("Average daily range (ATR)", money(s.atr)),
+      key("Opening volume vs normal", s.rvol === null ? "–" : `${s.rvol.toFixed(2)}×`)));
+    if (s.candidate) {
+      const c = s.candidate;
+      card.append(el("div", { class: "signal" },
+        el("strong", { text: `Buy signal at ${etOf(day, c.minute + 1)} New York` }), el("span", { class: "mono", text: `${sgtOf(day, c.minute + 1)} Singapore` }),
+        el("span", { text: "Entry reference" }), el("span", { class: "mono", text: money(c.entry) }),
+        el("span", { text: "Protective stop" }), el("span", { class: "mono", text: `${money(c.stop)}  (risk ${money(c.riskPerShare)} a share)` }),
+        el("span", { text: "Signal expires" }), el("span", { class: "mono", text: `${c.expiresEt} New York if no order is placed` }),
+        el("span", { text: "Market" }), el("span", { text: REG[c.regime] })));
+    }
+    const box = el("div", { class: "chartbox" });
+    card.append(box);
+    card.append(el("div", { class: "legend" },
+      el("span", {}, el("i", { class: "ln", style: "background:var(--price)" }), document.createTextNode("Price (1-minute close)")),
+      el("span", {}, el("i", { class: "ln", style: "background:var(--vwap)" }), document.createTextNode("VWAP")),
+      el("span", {}, el("i", { style: "background:var(--orb-wash);outline:1px solid var(--axis)" }), document.createTextNode("Opening range")),
+      s.candidate ? el("span", {}, el("i", { class: "ln", style: "background:var(--stop)" }), document.createTextNode("Protective stop")) : null));
+    const used = [...new Set(s.runs.map((r) => r.outcome))];
+    card.append(el("div", { class: "legend" }, el("span", { text: "Decisions:" }),
+      ...used.map((o) => el("span", {}, el("i", { style: `background:var(${OUT_VAR[o]})` }), document.createTextNode(`${OUT_ICON[o]} ${OUT[o]}`)))));
+    card.append(el("h3", { text: "What the system decided, and why", style: "font-size:14px;margin:20px 0 4px" }));
+    card.append(decisionLog(day, s));
+    requestAnimationFrame(() => drawChart(box, day, s));
+    return card;
+  }
+  const key = (k, v) => el("div", {}, el("div", { class: "k", text: k }), el("div", { class: "v", text: v }));
+
+  function decisionLog(day, s) {
+    if (!s.runs.length) return el("div", { class: "empty", text: "No decisions: this stock was not selected for trading." });
+    const ul = el("ul", { class: "log" });
+    for (const r of s.runs) {
+      const range = r.from === r.to ? etOf(day, r.from + 1) : `${etOf(day, r.from + 1)}–${etOf(day, r.to + 1)}`;
+      const mins = r.to - r.from + 1;
+      ul.append(el("li", {},
+        el("div", {}, el("div", { class: "when", text: range }), el("div", { class: "code", text: `${mins} min · ${REG[r.regime]}` })),
+        el("div", {}, el("span", { class: "chip", style: r.outcome === "CANDIDATE" ? "color:var(--good-ink)" : "" },
+          el("i", { style: `background:var(${OUT_VAR[r.outcome]})` }), document.createTextNode(`${OUT_ICON[r.outcome]} ${OUT[r.outcome]}`))),
+        el("div", {}, ...r.text.map((t) => el("div", { text: t })), el("div", { class: "code", text: r.codes.join(" · ") }))));
+    }
+    return ul;
+  }
+
+  // ---------- chart ----------
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const sv = (tag, attrs = {}) => { const n = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v); return n; };
+
+  function drawChart(box, day, s) {
+    box.replaceChildren();
+    const W = Math.max(300, box.clientWidth), narrow = W < 560;
+    const M = { l: narrow ? 48 : 58, r: narrow ? 12 : 92, t: 12 };
+    const priceH = narrow ? 200 : 280, volH = 44, gap = 10, stripH = 16;
+    const H = M.t + priceH + gap + volH + gap + stripH + 24;
+    const n = day.session.minutes;
+    const bars = s.bars;
+    const x = (i) => M.l + (i / (n - 1)) * (W - M.l - M.r);
+    const vals = [];
+    for (const b of bars) vals.push(b[2], b[3]);
+    if (s.orb) vals.push(s.orb.high, s.orb.low);
+    if (s.candidate) vals.push(s.candidate.stop, s.candidate.entry);
+    let lo = Math.min(...vals), hi = Math.max(...vals);
+    const padv = (hi - lo) * 0.08 || 1; lo -= padv; hi += padv;
+    const y = (v) => M.t + (1 - (v - lo) / (hi - lo)) * priceH;
+    const vTop = M.t + priceH + gap, maxVol = Math.max(...bars.map((b) => b[5]), 1);
+    const vy = (v) => vTop + volH - (v / maxVol) * volH;
+    const sTop = vTop + volH + gap;
+
+    const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img", tabindex: "0",
+      "aria-label": `${s.symbol} price chart. Use left and right arrow keys to move through the day.` });
+    // forming window + entry cutoff
+    const orbMin = D.config.openingRangeMinutes;
+    svg.append(sv("rect", { x: x(0), y: M.t, width: x(orbMin) - x(0), height: priceH + gap + volH, fill: "var(--forming)" }));
+    // grid
+    const step = niceStep((hi - lo) / 5);
+    for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) {
+      svg.append(sv("line", { x1: M.l, x2: W - M.r, y1: y(v), y2: y(v), stroke: "var(--grid)", "stroke-width": 1 }));
+      const t = sv("text", { x: M.l - 8, y: y(v) + 4, "text-anchor": "end" }); t.textContent = v.toFixed(step < 0.1 ? 2 : step < 1 ? 2 : 0); svg.append(t);
+    }
+    const [lh, lm] = D.config.lastEntryEt.split(":").map(Number);
+    const cutoff = lh * 60 + lm - day.session.openEtMinutes;
+    if (cutoff > 0 && cutoff < n) {
+      svg.append(sv("line", { x1: x(cutoff), x2: x(cutoff), y1: M.t, y2: sTop + stripH, stroke: "var(--axis)", "stroke-width": 1 }));
+      const t = sv("text", { x: x(cutoff) + 4, y: M.t + 11 }); t.textContent = `Last entry ${D.config.lastEntryEt}`; svg.append(t);
+    }
+    // opening range band
+    if (s.orb) {
+      svg.append(sv("rect", { x: x(0), y: y(s.orb.high), width: x(n - 1) - x(0), height: Math.max(1, y(s.orb.low) - y(s.orb.high)), fill: "var(--orb-wash)" }));
+      const stopNear = s.candidate && Math.abs(y(s.candidate.stop) - y(s.orb.low)) < 16;
+      for (const [v, name] of [[s.orb.high, "Range high"], [s.orb.low, "Range low"]]) {
+        svg.append(sv("line", { x1: x(0), x2: x(n - 1), y1: y(v), y2: y(v), stroke: "var(--axis)", "stroke-width": 1 }));
+        if (!narrow) {
+          const dy = name === "Range low" && stopNear ? -6 : 4;
+          const t = sv("text", { x: W - M.r + 6, y: y(v) + dy, class: "lbl" }); t.textContent = `${name} ${v.toFixed(2)}`; svg.append(t);
+        }
+      }
+    }
+    // volume
+    const bw = Math.max(1, (W - M.l - M.r) / n - 0.6);
+    for (const b of bars) svg.append(sv("rect", { x: x(b[0]) - bw / 2, y: vy(b[5]), width: bw, height: vTop + volH - vy(b[5]), fill: "var(--vol)" }));
+    const vt = sv("text", { x: M.l - 8, y: vTop + 10, "text-anchor": "end" }); vt.textContent = "Volume"; svg.append(vt);
+    // lines
+    const path = (pts) => pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join("");
+    svg.append(sv("path", { d: path(s.vwap.map((p) => [x(p[0]), y(p[1])])), fill: "none", stroke: "var(--vwap)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+    svg.append(sv("path", { d: path(bars.map((b) => [x(b[0]), y(b[4])])), fill: "none", stroke: "var(--price)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+    // candidate + stop
+    if (s.candidate) {
+      const c = s.candidate;
+      svg.append(sv("line", { x1: x(c.minute), x2: x(n - 1), y1: y(c.stop), y2: y(c.stop), stroke: "var(--stop)", "stroke-width": 1.5 }));
+      if (!narrow) {
+        const near = s.orb && Math.abs(y(c.stop) - y(s.orb.low)) < 16;
+        const t = sv("text", { x: W - M.r + 6, y: y(c.stop) + (near ? 12 : 4), class: "lbl" }); t.textContent = `Stop ${c.stop.toFixed(2)}`; svg.append(t);
+      }
+      svg.append(sv("circle", { cx: x(c.minute), cy: y(c.entry), r: 6, fill: "var(--o-candidate)", stroke: "var(--surface)", "stroke-width": 2 }));
+      const t = sv("text", { x: x(c.minute) + 10, y: y(c.entry) - 10, class: "lbl" }); t.textContent = `Buy signal ${c.entry.toFixed(2)}`; svg.append(t);
+    }
+    // decision strip
+    svg.append(sv("rect", { x: x(0), y: sTop, width: x(n - 1) - x(0), height: stripH, fill: "var(--surface-2)", rx: 3 }));
+    for (const r of s.runs) {
+      const x0 = x(r.from), x1 = x(r.to + 1 > n - 1 ? n - 1 : r.to + 1);
+      svg.append(sv("rect", { x: x0, y: sTop, width: Math.max(2, x1 - x0 - 1), height: stripH, fill: `var(${OUT_VAR[r.outcome]})` }));
+    }
+    const dl = sv("text", { x: M.l - 8, y: sTop + 12, "text-anchor": "end" }); dl.textContent = "Decision"; svg.append(dl);
+    // time axis
+    for (let m = 0; m <= n; m += (narrow ? 90 : 60)) {
+      const t = sv("text", { x: x(Math.min(m, n - 1)), y: H - 4, "text-anchor": m === 0 ? "start" : (m >= n - 1 ? "end" : "middle") });
+      t.textContent = etOf(day, m); svg.append(t);
+    }
+    // crosshair layer
+    const cross = sv("line", { y1: M.t, y2: sTop + stripH, stroke: "var(--ink-2)", "stroke-width": 1, visibility: "hidden" });
+    const dot = sv("circle", { r: 4, fill: "var(--price)", stroke: "var(--surface)", "stroke-width": 2, visibility: "hidden" });
+    svg.append(cross, dot);
+    const hit = sv("rect", { x: M.l, y: 0, width: W - M.l - M.r, height: H, fill: "transparent" });
+    svg.append(hit);
+    box.append(svg);
+    const tip = el("div", { class: "tip", hidden: "" });
+    box.append(tip);
+
+    const byMin = new Map(bars.map((b) => [b[0], b]));
+    const vwapMin = new Map(s.vwap);
+    const runAt = (i) => s.runs.find((r) => i >= r.from && i <= r.to);
+    let cur = null;
+    function show(i) {
+      i = Math.max(0, Math.min(n - 1, i)); cur = i;
+      const b = byMin.get(i);
+      cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
+      if (b) { dot.setAttribute("cx", x(i)); dot.setAttribute("cy", y(b[4])); dot.setAttribute("visibility", "visible"); }
+      else dot.setAttribute("visibility", "hidden");
+      tip.replaceChildren();
+      tip.append(el("div", { class: "time", text: `${etOf(day, i)}–${etOf(day, i + 1)} New York` }),
+        el("div", { class: "code", style: "color:var(--muted);font-size:11.5px;margin-bottom:4px", text: `${sgtOf(day, i)} Singapore` }));
+      if (b) {
+        tip.append(el("div", { class: "row" }, el("i", { style: "background:var(--price)" }), el("span", { text: "Price" }), el("b", { text: b[4].toFixed(2) })));
+        const vw = vwapMin.get(i);
+        if (vw) tip.append(el("div", { class: "row" }, el("i", { style: "background:var(--vwap)" }), el("span", { text: "VWAP" }), el("b", { text: vw.toFixed(2) })));
+        tip.append(el("div", { class: "row" }, el("i", { style: "background:var(--vol)" }), el("span", { text: "Volume" }), el("b", { text: b[5].toLocaleString("en-US") })));
+      } else {
+        tip.append(el("div", { class: "row" }, el("i"), el("span", { text: "No price data for this minute" }), el("b")));
+      }
+      const r = runAt(i);
+      if (r) tip.append(el("div", { class: "dec" }, el("strong", { text: `${OUT_ICON[r.outcome]} ${OUT[r.outcome]}` }), el("div", { text: r.text[0] }),
+        el("div", { style: "color:var(--muted);font-size:11.5px", text: `Market: ${REG[r.regime]}` })));
+      else if (i < orbMin) tip.append(el("div", { class: "dec", text: "Opening range forming. No decisions before it is complete." }));
+      tip.hidden = false;
+      const left = x(i) + 14 + 260 > W ? x(i) - 274 : x(i) + 14;
+      tip.style.left = `${Math.max(0, left)}px`; tip.style.top = `${M.t + 4}px`;
+    }
+    const hide = () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); };
+    const toMin = (ev) => { const r = svg.getBoundingClientRect(); const px = (ev.clientX - r.left) * (W / r.width);
+      return Math.round(((px - M.l) / (W - M.l - M.r)) * (n - 1)); };
+    svg.addEventListener("pointermove", (e) => show(toMin(e)));
+    svg.addEventListener("pointerdown", (e) => show(toMin(e)));
+    svg.addEventListener("pointerleave", hide);
+    svg.addEventListener("blur", hide);
+    svg.addEventListener("focus", () => show(cur ?? (s.candidate ? s.candidate.minute : orbMin)));
+    svg.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        e.preventDefault(); show((cur ?? orbMin) + (e.key === "ArrowRight" ? 1 : -1) * (e.shiftKey ? 15 : 1));
+      } else if (e.key === "Escape") hide();
+    });
+  }
+  function niceStep(raw) {
+    const p = Math.pow(10, Math.floor(Math.log10(raw))); const f = raw / p;
+    return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p;
+  }
+
+  function glossary() {
+    const items = [
+      ["Opening range", `The highest and lowest price in the first ${D.config.openingRangeMinutes} minutes after the 09:30 New York open.`],
+      ["Breakout", "A one-minute bar closes above the opening-range high plus a small buffer."],
+      ["VWAP", "The day's average traded price, weighted by volume. The rules only buy above it."],
+      ["ATR", "Average true range: how much the stock normally moves in a day, in dollars."],
+      ["Opening volume vs normal", "Shares traded in the first 15 minutes compared with a normal day. Above 1.0× means unusual interest."],
+      ["Protective stop", "The price at which the position would be sold to limit a loss. It sits just below the opening-range low."],
+      [`Last entry ${D.config.lastEntryEt}`, "No new buy signals after this time (New York). Positions would close before the market closes."],
+      ["Test days", "Every day here uses made-up prices on real calendar dates, built to test one situation each. They say nothing about real profits."],
+    ];
+    return el("section", { class: "card" }, el("h2", { text: "How to read this", style: "margin-bottom:12px" }),
+      el("dl", { class: "gloss" }, ...items.map(([t, d]) => el("div", {}, el("dt", { text: t }), el("dd", { text: d })))));
+  }
+
+  let rt;
+  window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(render, 150); });
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
